@@ -3,6 +3,7 @@ package main
 import(
 	"time"
 	"strings"
+	"fmt"
 )
 
 
@@ -20,6 +21,9 @@ func statsReader(socket, statsType string, statsChannel chan []byte){
 		case "server":
 			cmd = "show stat -1 4 -1\n"
 	}
+
+
+	Info(fmt.Sprintf("Connecting to Unix socket: %s",socket))
 
 	for {
 		stats, err := command(socket,cmd)

@@ -9,7 +9,7 @@ Vamp-proxy-agent is a tiny helper agent that provides the following services:
 
 Run `vamp-proxy-agent -h` to display usage instructions:
 
-```bash
+```
 $ ./vamp-proxy-agent -h
 Usage of ./vamp-proxy-agent:
   -debug
@@ -79,5 +79,32 @@ filter {
 }
 output {
   stdout { codec => rubydebug }
+}
+```
+
+If you get some traffic going, you should see Logstash output something similar to this:
+
+```
+...
+{
+       "message" => "<150>Oct 23 15:37:57 haproxy[23433]: { \"timestamp\" : 23/Oct/2015:15:37:57.603, \"frontend\" : \"test_route_2\", \"method\" : \"GET /ping HTTP/1.0\", \"captured_request_headers\" : \"\", \"captures_response_headers\" : \"\" }\n",
+      "@version" => "1",
+    "@timestamp" => "2015-10-23T13:37:58.649Z",
+          "type" => "haproxy_log",
+          "host" => "127.0.0.1"
+}
+{
+           "message" => [
+        [0] "test_route_2::service_a,BACKEND,0,0,0,10,50000,1002,88803,123250,0,0,,0,0,0,0,UP,100,1,0,,0,96,0,,1,7,0,,1001,,1,0,,469,,,,0,1001,0,1,0,0,,,,,0,0,0,0,0,0,39,,,0,8,6,17,"
+    ],
+          "@version" => "1",
+        "@timestamp" => "2015-10-23T13:27:46.553Z",
+              "type" => "1",
+              "host" => "127.0.0.1",
+            "pxname" => "test_route_2::service_a",
+            "svname" => "BACKEND",
+              "qcur" => "0",
+              "qmax" => "0",
+              ...
 }
 ```
