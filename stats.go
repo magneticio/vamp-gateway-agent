@@ -7,7 +7,7 @@ import(
 )
 
 
-func statsReader(socket, statsType string, statsChannel chan []byte){
+func statsReader(socket, statsType string, interval int, statsChannel chan []byte){
 
 	var cmd string
 
@@ -40,6 +40,6 @@ func statsReader(socket, statsType string, statsChannel chan []byte){
 				statsChannel <- []byte(line)
 			}
 		}
-		<- time.After(3 * time.Second)
+		<- time.After(time.Duration(interval) * time.Second)
 	}
 }

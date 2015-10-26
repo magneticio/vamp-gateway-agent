@@ -18,6 +18,7 @@ var(
 	HaproxyStatsSocket = flag.String("haproxyStatsSocket","/tmp/haproxy.stats.sock","The location of the HAproxy stats socket")
 	HaproxyStatsType = flag.String("haproxyStatsType","all","Which stats to read from haproxy: all, frontend, backend or server.")
 	DebugSwitch = flag.Bool("debug",false,"Switches on extra log statements")
+	PollInterval = flag.Int("pollInterval",3,"How often (in seconds) to poll for metrics")
 )
 
 func cleanup(){
@@ -60,7 +61,7 @@ func main() {
 	go sender(*logHost,*logPort,logChannel)
 
 	// start the stats stream
-	go statsReader(*HaproxyStatsSocket,*HaproxyStatsType,statsChannel)
+	go statsReader(*HaproxyStatsSocket,*HaproxyStatsType,*PollInterval,statsChannel)
 	go sender(*statsHost,*statsPort,statsChannel)
 
 	waiter <- true
