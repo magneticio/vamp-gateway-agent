@@ -17,6 +17,8 @@ const (
 	HaProxyLogSocket = HaProxyPath + "haproxy.log.sock"
 	HaProxyStatsSocket = HaProxyPath + "haproxy.stats.sock"
 
+	ZooKeeperPath = "/vamp/gateways/haproxy"
+
 	LogPath = HaProxyPath + "gateway-agent.log"
 )
 
@@ -26,9 +28,16 @@ var (
 	StatsHost = flag.String("statsHost", "127.0.0.1", "Address of the remote Logstash instance")
 	StatsPort = flag.Int("statsPort", 10003, "The UDP input port of the remote Logstash instance")
 	StatsPollInterval = flag.Int("pollInterval", 5, "How often (in seconds) to poll for statistics.")
+	ZooKeeperServers = flag.String("zkServers", "127.0.0.1:2181", "ZooKeeper servers.")
 
 	Logger = ConfigureLog(LogPath, true)
 	DebugSwitch = flag.Bool("debug", false, "Switches on extra log statements")
+
+	haProxy = HaProxy{
+		Binary:     HaProxyBinary,
+		ConfigFile: HaProxyConfigFile,
+		PidFile:    HaProxyPidFile,
+	}
 )
 
 func main() {
@@ -55,8 +64,9 @@ func main() {
 	defer cleanup()
 
 	loadHaProxy()
-	collectLogs()
-	collectStats()
+	collectHaProxyLogs()
+	collectHaProxyStats()
+	watchZooKeeper()
 
 	waiter <- true
 }
@@ -80,12 +90,6 @@ func cleanup() {
 }
 
 func loadHaProxy() {
-	haProxy := HaProxy{
-		Binary:     HaProxyBinary,
-		ConfigFile: HaProxyConfigFile,
-		PidFile:    HaProxyPidFile,
-	}
-
 	err := haProxy.SetPid()
 	if err != nil {
 		Logger.Notice("Pidfile exists at %s, proceeding...", haProxy.PidFile)
@@ -100,7 +104,7 @@ func loadHaProxy() {
 	}
 }
 
-func collectLogs() {
+func collectHaProxyLogs() {
 	// set the socket HaProxy can write logs to
 	conn, err := net.ListenUnixgram("unixgram", &net.UnixAddr{HaProxyLogSocket, "unixgram"})
 	if err != nil {
@@ -116,9 +120,15 @@ func collectLogs() {
 	go sender(*LogHost, *LogPort, logChannel)
 }
 
-func collectStats() {
+func collectHaProxyStats() {
 	statsChannel := make(chan []byte, 1000000)
 	// start the stats stream
 	go statsReader(HaProxyStatsSocket, *StatsPollInterval, statsChannel)
 	go sender(*StatsHost, *StatsPort, statsChannel)
+}
+
+func watchZooKeeper() {
+	Logger.Info("Initializing Zookeeper connection to " + *ZooKeeperServers)
+	zkClient := ZkClient{}
+	go zkClient.Watch(*ZooKeeperServers, ZooKeeperPath)
 }

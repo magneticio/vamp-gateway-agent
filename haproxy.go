@@ -35,7 +35,7 @@ func (h *HaProxy) Reload() error {
 	}
 
 	// Setup all the command line parameters so we get an executable similar to
-	// /usr/local/bin/haproxy -f resources/haproxy_new.cfg -p resources/haproxy-private.pid -sf 1234
+	// /usr/local/bin/haproxy -f haproxy.cfg -p haproxy.pid -sf 1234
 	arg0 := "-f"
 	arg1 := h.ConfigFile
 	arg2 := "-p"
@@ -56,9 +56,9 @@ func (h *HaProxy) Reload() error {
 	var out bytes.Buffer
 	cmd.Stdout = &out
 
-	cmdErr := cmd.Run()
-	if cmdErr != nil {
-		return cmdErr
+	err = cmd.Run()
+	if err != nil {
+		return err
 	}
 
 	return nil
