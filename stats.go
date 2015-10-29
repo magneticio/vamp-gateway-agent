@@ -1,45 +1,32 @@
 package main
 
-import(
+import (
 	"time"
 	"strings"
 	"fmt"
 )
 
+func statsReader(socket string, interval int, statsChannel chan []byte) {
 
-func statsReader(socket, statsType string, interval int, statsChannel chan []byte){
+	var cmd string = "show stat -1\n"
 
-	var cmd string
-
-	switch statsType {
-		case "all":
-			cmd = "show stat -1\n"
-		case "backend":
-			cmd = "show stat -1 2 -1\n"
-		case "frontend":
-			cmd = "show stat -1 1 -1\n"
-		case "server":
-			cmd = "show stat -1 4 -1\n"
-	}
-
-
-	Info(fmt.Sprintf("Connecting to Unix socket: %s",socket))
+	Logger.Info(fmt.Sprintf("Connecting to Unix socket: %s", socket))
 
 	for {
-		stats, err := command(socket,cmd)
+		stats, err := command(socket, cmd)
 		if err != nil {
-			Error(err)
+			Logger.Panic(err)
 		}
 
 		// split on new lines
-		lines := strings.Split(stats,"\n")
+		lines := strings.Split(stats, "\n")
 
 		// loop over the lines, skipping the first one with the headers
-		for _,line := range lines[1:] {
+		for _, line := range lines[1:] {
 			if len(line) > 0 {
 				statsChannel <- []byte(line)
 			}
 		}
-		<- time.After(time.Duration(interval) * time.Second)
+		<-time.After(time.Duration(interval) * time.Second)
 	}
 }
