@@ -21,8 +21,7 @@ function go_build() {
     echo "${green}building ${GOOS}:${GOARCH} ${yellow}${bin}${reset}"
     rm -rf ${target_go} && mkdir -p ${target_go}
     go build
-    mv ${bin} ${target_go} && chmod +x ${target_go}/${bin}
-    cp -r ${dir}/configuration/ ${target_go}
+    mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.cfg ${target_go}/.
     cd ${target_go}
     tar -zcf ${assembly_go} *
     cd ${dir}
@@ -39,7 +38,7 @@ function docker_build {
     echo 'COPY vamp-gateway-agent.tar.gz /opt/vamp/' >> $2/Dockerfile
     echo 'RUN tar -xvzf /opt/vamp/vamp-gateway-agent.tar.gz -C /opt/vamp && rm /opt/vamp/vamp-gateway-agent.tar.gz' >> $2/Dockerfile
     echo 'EXPOSE 1988' >> $2/Dockerfile
-    echo 'ENTRYPOINT ["/opt/vamp/vamp-gateway-agent"]' >> $2/Dockerfile
+    echo 'CMD ["/opt/vamp/vamp-gateway-agent"]' >> $2/Dockerfile
 
     echo "${green}building docker image: $1 ${reset}"
     docker build -t $1 $2

@@ -15,7 +15,6 @@ const (
 	HaProxyConfigFile = HaProxyPath + "haproxy.cfg"
 	HaProxyPidFile = HaProxyPath + "haproxy.pid"
 	HaProxyLogSocket = HaProxyPath + "haproxy.log.sock"
-	HaProxyStatsSocket = HaProxyPath + "haproxy.stats.sock"
 
 	ZooKeeperPath = "/vamp/gateways/haproxy"
 
@@ -25,13 +24,10 @@ const (
 var (
 	LogHost = flag.String("logHost", "127.0.0.1", "Address of the remote Logstash instance")
 	LogPort = flag.Int("logPort", 10002, "The UDP input port of the remote Logstash instance")
-	StatsHost = flag.String("statsHost", "127.0.0.1", "Address of the remote Logstash instance")
-	StatsPort = flag.Int("statsPort", 10003, "The UDP input port of the remote Logstash instance")
-	StatsPollInterval = flag.Int("pollInterval", 5, "How often (in seconds) to poll for statistics.")
 	ZooKeeperServers = flag.String("zkServers", "127.0.0.1:2181", "ZooKeeper servers.")
 
 	Logger = ConfigureLog(LogPath, true)
-	DebugSwitch = flag.Bool("debug", false, "Switches on extra log statements")
+	DebugSwitch = flag.Bool("debug", true, "Switches on extra log statements")
 
 	haProxy = HaProxy{
 		Binary:     HaProxyBinary,
@@ -65,7 +61,6 @@ func main() {
 
 	loadHaProxy()
 	collectHaProxyLogs()
-	collectHaProxyStats()
 	watchZooKeeper()
 
 	waiter <- true
@@ -118,13 +113,6 @@ func collectHaProxyLogs() {
 	// start the logging stream
 	go simpleReader(conn, logChannel)
 	go sender(*LogHost, *LogPort, logChannel)
-}
-
-func collectHaProxyStats() {
-	statsChannel := make(chan []byte, 1000000)
-	// start the stats stream
-	go statsReader(HaProxyStatsSocket, *StatsPollInterval, statsChannel)
-	go sender(*StatsHost, *StatsPort, statsChannel)
 }
 
 func watchZooKeeper() {

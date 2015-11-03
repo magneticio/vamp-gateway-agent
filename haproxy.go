@@ -45,7 +45,6 @@ func (h *HaProxy) Reload() error {
 	arg6 := strings.Trim(string(pid), "\n")
 	var cmd *exec.Cmd
 
-	// fmt.Println(r.Binary + " " + arg0 + " " + arg1 + " " + arg2 + " " + arg3 + " " + arg4 + " " + arg5 + " " + arg6)
 	// If this is the first run, the PID value will be empty, otherwise it will be > 0
 	if len(arg6) > 0 {
 		cmd = exec.Command(h.Binary, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
