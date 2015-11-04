@@ -36,8 +36,8 @@ func Sender(host string, port int, messageChannel chan []byte) {
 	}
 
 	LocalAddress, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
-	Log.Error("Can't resolve local UDP address: %s", err)
 	if err != nil {
+		Log.Error("Can't resolve local UDP address: %s", err.Error())
 		return
 	}
 
@@ -48,6 +48,7 @@ func Sender(host string, port int, messageChannel chan []byte) {
 	}
 
 	defer Conn.Close()
+
 	for {
 		select {
 		case msg := <-messageChannel:

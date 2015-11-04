@@ -56,8 +56,13 @@ func (h *HAProxy) Reload() {
 		return
 	}
 
-	// Setup all the command line parameters so we get an executable similar to
-	// /usr/local/bin/haproxy -f haproxy.cfg -p haproxy.pid -sf 1234
+	Log.Info("HaProxy configuration file: %s", h.ConfigFile)
+
+	/*
+	 * Setup all the command line parameters so we get an executable similar to
+	 *  /usr/local/bin/haproxy -f haproxy.cfg -p haproxy.pid -sf 1234
+	 *
+	 */
 	arg0 := "-f"
 	arg1 := h.ConfigFile
 	arg2 := "-p"
@@ -69,8 +74,10 @@ func (h *HAProxy) Reload() {
 
 	// If this is the first run, the PID value will be empty, otherwise it will be > 0
 	if len(arg6) > 0 {
+		Log.Info("HaProxy command: %s %s %s %s %s %s %s %s", h.Binary, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 		cmd = exec.Command(h.Binary, arg0, arg1, arg2, arg3, arg4, arg5, arg6)
 	} else {
+		Log.Info("HaProxy command: %s %s %s %s %s %s", h.Binary, arg0, arg1, arg2, arg3, arg4)
 		cmd = exec.Command(h.Binary, arg0, arg1, arg2, arg3, arg4)
 	}
 
