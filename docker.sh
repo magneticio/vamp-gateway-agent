@@ -51,7 +51,7 @@ function help() {
     echo "${yellow}  -h|--help   ${green}Help.${reset}"
     echo "${yellow}  -l|--list   ${green}List all available images.${reset}"
     echo "${yellow}  -c|--clean  ${green}Remove all available images.${reset}"
-    echo "${yellow}  -m|--make   ${green}Build vamp-gateway-agent binary.${reset}"
+    echo "${yellow}  -m|--make   ${green}Build vamp-gateway-agent binary and copy it to Docker directories.${reset}"
     echo "${yellow}  -b|--build  ${green}Build all available images.${reset}"
 }
 
@@ -78,14 +78,16 @@ function docker_rmi {
     docker rmi -f $1 2> /dev/null
 }
 
-function docker_build {
-    echo "${green}appending common code to: $2/Dockerfile ${reset}"
-    echo 'RUN mkdir -p /opt/vamp' >> $2/Dockerfile
-    echo 'COPY vamp-gateway-agent.tar.gz /opt/vamp/' >> $2/Dockerfile
-    echo 'RUN tar -xvzf /opt/vamp/vamp-gateway-agent.tar.gz -C /opt/vamp && rm /opt/vamp/vamp-gateway-agent.tar.gz' >> $2/Dockerfile
-    echo 'EXPOSE 1988' >> $2/Dockerfile
-    echo 'ENTRYPOINT ["/opt/vamp/vamp-gateway-agent"]' >> $2/Dockerfile
+function docker_make {
+    echo "${green}appending common code to: $1/Dockerfile ${reset}"
+    echo 'RUN mkdir -p /opt/vamp' >> $1/Dockerfile
+    echo 'COPY vamp-gateway-agent.tar.gz /opt/vamp/' >> $1/Dockerfile
+    echo 'RUN tar -xvzf /opt/vamp/vamp-gateway-agent.tar.gz -C /opt/vamp && rm /opt/vamp/vamp-gateway-agent.tar.gz' >> $1/Dockerfile
+    echo 'EXPOSE 1988' >> $1/Dockerfile
+    echo 'ENTRYPOINT ["/opt/vamp/vamp-gateway-agent"]' >> $1/Dockerfile
+}
 
+function docker_build {
     echo "${green}building docker image: $1 ${reset}"
     docker build -t $1 $2
 }
@@ -121,11 +123,14 @@ function process() {
         images+=(${image})
         image_name=magneticio/vamp-gateway-agent_${image}:${version}
 
+        if [ ${flag_make} -eq 1 ]; then
+            cp -R ${dir}/${target_go}/${assembly_go} ${target} 2> /dev/null
+            docker_make ${target}
+        fi
         if [ ${flag_clean} -eq 1 ]; then
             docker_rmi ${image_name}
         fi
         if [ ${flag_build} -eq 1 ]; then
-            cp -R ${dir}/${target_go}/${assembly_go} ${target} 2> /dev/null
             docker_build ${image_name} ${target}
         fi
     done
@@ -143,6 +148,6 @@ if [ ${flag_help} -eq 1 ] || [[ $# -eq 0 ]]; then
     help
 fi
 
-if [ ${flag_list} -eq 1 ] || [ ${flag_clean} -eq 1 ] || [ ${flag_build} -eq 1 ]; then
+if [ ${flag_list} -eq 1 ] || [ ${flag_clean} -eq 1 ] || [ ${flag_make} -eq 1 ] || [ ${flag_build} -eq 1 ]; then
     process
 fi

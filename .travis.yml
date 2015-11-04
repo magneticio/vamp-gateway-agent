@@ -9,10 +9,9 @@ script: bash docker.sh --make
 after_success: |
   if [ -n "$GITHUB_API_KEY" ] && [ ${TRAVIS_PULL_REQUEST} == "false" ] && [ $TRAVIS_BRANCH == "master" ]; then
     TMP_DIR=/tmp/vamp
-    GIT_REPO=github.com/magneticio/vamp-gateway-agent.git
     GIT_COMMIT=`git rev-parse --short HEAD`
 
-    git clone -b docker https://${GIT_REPO} $TMP_DIR
+    git clone -b docker https://github.com/magneticio/vamp-gateway-agent.git $TMP_DIR
 
     rm -fR $TMP_DIR/docker $TMP_DIR/LICENSE $TMP_DIR/README.md
     mv target/docker $TMP_DIR/.
@@ -22,11 +21,11 @@ after_success: |
 
     git add .
     git -c user.name='travis' -c user.email='travis' commit -m "build $GIT_COMMIT"
-    #git push -f -q https://$GITHUB_API_KEY@${GIT_REPO} docker &2>/dev/null
+    git push -f -q https://$GITHUB_API_KEY@github.com/magneticio/vamp-gateway-agent.git docker
 
     cd $TRAVIS_BUILD_DIR
   fi
 
 env:
   matrix:
-    secure: leWAmjvxfPpJ8xw91VNYaQg6QvUdAUfHlO/m7vjiliZWHyqpL6pmyjIx/SctMRfZgyonoMH3j2E3FGzz7Au4hMmciB2+/TWzsGVmnwuWMmeCGShIZFaNmwBnE8BAxu2qRir3DcYlSbPH7veJnl42YCrsitN7UW6AxxNqIZz0TbJsFR4neD7QApAuj66mBLOKGwCiqxUasxZFu1dx7S+wpVrznXqIL6F7FBtwq8vJh0+brl8AFWSV/+Gi/XB/32vlPpn8skil1azsFMztmAOnNWohU/8DqhFrqLjSI54e8AaQLSDXd2N4aTZq3lzmlgpoTj/hwvAzbRk++n/YcDrOFzWOLJ8W+g5dLqcHqNNyvomdGd3YWlP4Os7IibmsHF0V4xsfyXtdPIqmEH5cQjZBiA1azIEUnp22rf2uGr8XkDENbGY6ByW8+mpT+04WAinw/lIfdkq4DmKEVMVz4tKnDlokdqLtS6kh+VLwY/9/CEYB6HaXKYLlU8QjKxrYf0rpUKOga7JvsY8LtwfVq0CiWBk4Qu9WjmNwg3gmBoABi88MfSScJt03IH1hddf5S7xiswUS6bQN//esf2SsklMmPxalS/4WY8i/EfJTZzCCzIPxAHSLGKghZ/iWH+7/r/+ykqfsIyAAn7vBNxWR8OIA8gwWMLGcgasxWG1sle+NEas=
+    secure: GMLLA4QspoFvkjGwVg0VTHuqnSJRqI3RMTkDtLLvdZxGgmoytidnUbewjmuV5v9rfGWtjg3ZKXN1aY5QUNHXNTeOixJ/6VeD4c8vIyenlmFMwvIHYZ+WD6q+cscJp59ocjrJgS/qqcpj2MvY0GzOOn1FKkV5g9+WZEtEPe4+1TudHpODY36R64Hst2hd+N+OXiWSUeSDF+Rfbqf6ZuKVuny6FJF8PwD5Zj3+K9gFREC0jgZJwGM+74v++OXGGIthrPZzJ3aeW2vWKl2+ASgfxGV1Iw3KeRCFPCBH6rJbVnJ0k7y2YyBZeiDeftCxwke65leinTpkxorxqjWKgk5HjO4cKbljLne8CkI3TGaQHrvz1uk7yOwxM0E1wbvDj4+RbvgsvoEWNZL7hHDY2xL3GvHZOXKUPuW5tmZcsr/EUzw2B4V5j3Sv/rYncak76u8uufBumP+TJ5mPDGekzUt4CRIXVe+DlsIpVLKtfl0NwYNpVxMpYJWoBPYeSzR4C3Bv74gE2nCHk4Hsh9a71uEDtW/3ykhuvS7MymD4eIzI8usN5+rfcigM/sMVYpMrFerOvCKUQe1R7V5PeUzLRZ4XZ/ohMT06ypd/CcR6rM1buHp5oKcrCdGXJYVnUtwFDpXwFiXmAnPwrjjU16RLWMEsOSUUIXs/LQlHDNBp46vYiiA=
