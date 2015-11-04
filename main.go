@@ -3,35 +3,24 @@ package main
 import (
 	"os"
 	"flag"
-	"time"
 	"syscall"
-	"strings"
-	"io/ioutil"
 	"os/signal"
-	"github.com/samuel/go-zookeeper/zk"
 )
 
 const (
-	HaProxyPath = "/opt/vamp/"
+	HAProxyPath = "/opt/vamp/"
 )
 
 var (
-	LogstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the remote Logstash instance")
-	LogstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the remote Logstash instance")
+	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the remote Logstash instance")
+	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the remote Logstash instance")
 
-	ZooKeeperServers = flag.String("zooKeeperServers", "127.0.0.1:2181", "ZooKeeper servers.")
-	ZooKeeperPath = flag.String("zooKeeperPath", "/vamp/gateways/haproxy", "ZooKeeper HAProxy configuration path.")
+	zooKeeperServers = flag.String("zooKeeperServers", "127.0.0.1:2181", "ZooKeeper servers.")
+	zooKeeperPath = flag.String("zooKeeperPath", "/vamp/gateways/haproxy", "ZooKeeper HAProxy configuration path.")
 
-	DebugSwitch = flag.Bool("debug", false, "Switches on extra log statements")
+	debug = flag.Bool("debug", false, "Switches on extra log statements")
 
-	Log = CreateLogger()
-
-	HaProxy = HAProxy{
-		Binary:     "haproxy",
-		ConfigFile: HaProxyPath + "haproxy.cfg",
-		PidFile:    HaProxyPath + "haproxy.pid",
-		LogSocket:  HaProxyPath + "haproxy.log.sock",
-	}
+	logger = CreateLogger()
 )
 
 func Logo(version string) string {
@@ -49,12 +38,28 @@ func Logo(version string) string {
 }
 
 func main() {
-	Log.Notice(Logo("0.8.0"))
+	logger.Notice(Logo("0.8.0"))
+
 	flag.Parse()
-	Log.Notice("Starting Vamp Gateway Agent")
+
+	logger.Notice("Starting Vamp Gateway Agent")
+
+	haProxy := HAProxy{
+		Binary:     "haproxy",
+		ConfigFile: HAProxyPath + "haproxy.cfg",
+		PidFile:    HAProxyPath + "haproxy.pid",
+		LogSocket:  HAProxyPath + "haproxy.log.sock",
+	}
+
+	zooKeeper := ZooKeeper{
+		Servers: *zooKeeperServers,
+		Path: *zooKeeperPath,
+	}
 
 	// Waiter keeps the program from exiting instantly.
 	waiter := make(chan bool)
+
+	cleanup := func() { os.Remove(haProxy.LogSocket) }
 
 	// Catch a CTR+C exits so the cleanup routine is called.
 	c := make(chan os.Signal, 1)
@@ -68,54 +73,11 @@ func main() {
 
 	defer cleanup()
 
-	HaProxy.Init()
-	HaProxy.Reload()
+	haProxy.Init()
+	haProxy.Run()
 
-	go ConfigurationChangeWatch(*ZooKeeperServers, *ZooKeeperPath)
+	zooKeeper.Init()
+	go zooKeeper.Watch(haProxy.Reload)
 
 	waiter <- true
 }
-
-func cleanup() {
-	os.Remove(HaProxy.LogSocket)
-}
-
-func ConfigurationChangeWatch(servers, path string) {
-	Log.Notice("Initializing Zookeeper connection to " + *ZooKeeperServers)
-	zks := strings.Split(servers, ",")
-	conn, _, err := zk.Connect(zks, (60 * time.Second))
-
-	if err == nil {
-		Log.Notice("ZooKeeper path: %s", path)
-		for {
-			payload, _, watch, err := conn.GetW(path)
-
-			if err != nil {
-				Log.Error("Error from Zookeeper: %s", err.Error())
-				break
-			}
-
-			err = ioutil.WriteFile(HaProxy.ConfigFile, payload, 0644)
-			if err != nil {
-				Log.Error("Error writing to HaProxy configuration. Reloading aborted. %s", err.Error())
-			} else {
-				HaProxy.Reload()
-			}
-
-			event := <-watch
-
-			if event.Type == zk.EventNodeDataChanged {
-				Log.Notice("ZooKeeper configuration changed.")
-			}
-		}
-	} else {
-		Log.Error("Error connecting to Zookeeper: %s", err.Error())
-	}
-
-	if conn != nil {
-		conn.Close()
-	}
-
-	Log.Info("ZooKeeper stop monitoring.")
-}
-

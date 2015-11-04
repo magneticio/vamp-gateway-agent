@@ -14,6 +14,41 @@ assembly_go='vamp-gateway-agent.tar.gz'
 
 cd ${dir}
 
+function parse_command_line() {
+    flag_help=0
+    flag_list=0
+    flag_clean=0
+    flag_build=0
+
+    for key in "$@"
+    do
+    case ${key} in
+        -h|--help)
+        flag_help=1
+        ;;
+        -l|--list)
+        flag_list=1
+        ;;
+        -c|--clean)
+        flag_clean=1
+        ;;
+        -b|--build)
+        flag_build=1
+        ;;
+        *)
+        ;;
+    esac
+    done
+}
+
+function help() {
+    echo "${green}Usage of $0:${reset}"
+    echo "${yellow}  -h|--help   ${green}Help.${reset}"
+    echo "${yellow}  -l|--list   ${green}List all available images.${reset}"
+    echo "${yellow}  -c|--clean  ${green}Remove all available images.${reset}"
+    echo "${yellow}  -b|--build  ${green}Build all available images.${reset}"
+}
+
 function go_build() {
     bin='vamp-gateway-agent'
     export GOOS='linux'
@@ -53,42 +88,47 @@ function docker_images {
     docker images | grep 'magneticio/vamp-gateway-agent' | grep ${pattern}
 }
 
-echo "${green}cleaning...${reset}"
-rm -Rf ${dir}/${target_docker} 2> /dev/null && mkdir -p ${target_docker}
+function process() {
+    rm -Rf ${dir}/${target_docker} 2> /dev/null && mkdir -p ${target_docker}
+    cp -R ${dir}/docker/* ${dir}/${target_docker}
+    regex="^${target_docker}\/(.+)\/(.+)\/(.+)\/Dockerfile$"
 
-echo "${green}copying files...${reset}"
-cp -R ${dir}/docker/* ${dir}/${target_docker}
-regex="^${target_docker}\/(.+)\/(.+)\/(.+)\/Dockerfile$"
+    images=()
 
-images=()
+    for file in `find ${target_docker} | grep Dockerfile`
+    do
+      [[ ${file} =~ $regex ]]
+        haproxy_version="${BASH_REMATCH[1]}"
+        linux="${BASH_REMATCH[2]}"
+        linux_version="${BASH_REMATCH[3]}"
+        target=${dir}/${target_docker}/${haproxy_version}/${linux}/${linux_version}
+        image=${haproxy_version}-${linux}-${linux_version}
+        images+=(${image})
+        image_name=magneticio/vamp-gateway-agent_${image}:${version}
 
-for file in `find ${target_docker} | grep Dockerfile`
-do
-	[[ ${file} =~ $regex ]]
-    haproxy_version="${BASH_REMATCH[1]}"
-    linux="${BASH_REMATCH[2]}"
-    linux_version="${BASH_REMATCH[3]}"
-    target=${dir}/${target_docker}/${haproxy_version}/${linux}/${linux_version}
-    image=${haproxy_version}-${linux}-${linux_version}
-    images+=(${image})
-    image_name=magneticio/vamp-gateway-agent_${image}:${version}
+        if [ ${flag_clean} -eq 1 ]; then
+            docker_rmi ${image_name}
+        fi
+        if [ ${flag_build} -eq 1 ]; then
+            go_build
+            cp -R ${dir}/${target_go}/${assembly_go} ${target} 2> /dev/null
+            docker_build ${image_name} ${target}
+        fi
+    done
 
-    if [[ $* == *--clean* || $* == *-c* ]]
-    then
-        docker_rmi ${image_name}
+    if [ ${flag_list} -eq 1 ]; then
+        docker_images images
     fi
-    if [[ $* == *--build* || $* == *-b* ]]
-    then
-        go_build
-        cp -R ${dir}/${target_go}/${assembly_go} ${target} 2> /dev/null
-        docker_build ${image_name} ${target}
-    fi
-done
 
-if [[ $* == *--list* || $* == *-l* ]]
-then
-    docker_images images
+    echo "${green}done.${reset}"
+}
+
+parse_command_line $@
+
+if [ ${flag_help} -eq 1 ] || [[ $# -eq 0 ]]; then
+    help
 fi
 
-echo "${green}done.${reset}"
-
+if [ ${flag_list} -eq 1 ] || [ ${flag_clean} -eq 1 ] || [ ${flag_build} -eq 1 ]; then
+    process
+fi

@@ -1,0 +1,14 @@
+{
+	"ImportPath": "github.com/magneticio/vamp-gateway-agent",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/op/go-logging",
+			"Rev": "fb0230561a6ba1cab17beb95f1faedc16584fdb8"
+		},
+		{
+			"ImportPath": "github.com/samuel/go-zookeeper/zk",
+			"Rev": "9a466eec51e72221d972768a15f025bf096fc3e0"
+		}
+	]
+}
