@@ -3,11 +3,11 @@
 Vamp Gateway Agent provides the following services: 
 
 - read logs from HAProxy over sockets and push them to Logstash over UDP
-- read the HAProxy configuration from ZooKeeper and reloads the HAProxy on configuration change.
+- read the HAProxy configuration from ZooKeeper and reloads the HAProxy on each configuration change.
 
 ## Usage
 
-Run `vamp-gateway-agent -h` to display usage instructions:
+Run `vamp-gateway-agent -h` to display the usage instructions:
 
 ```
 $ ./vamp-proxy-agent -h
@@ -49,9 +49,16 @@ output {
 }
 ```
 
-## Building Docker images
+## Building Binary
 
-Directory `docker` contains `Dockerfile`s for following:
+- `go get github.com/tools/godep`
+- `godep restore`
+- `go install`
+- `go build`
+
+## Building Docker Images
+
+Directory `docker` contains `Dockerfile`s for the following:
 
 - HAProxy 1.5.14
 - Ubuntu 14.04, CentOS 7 and Alpine 3.2
@@ -67,7 +74,7 @@ Usage of ./docker.sh:
 
 ```
 
-Docker images after the build: 
+Docker images after the build (e.g. `./docker.sh -b`): 
 
 - magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:0.8.0
 - magneticio/vamp-gateway-agent_1.5.14-centos-7:0.8.0
