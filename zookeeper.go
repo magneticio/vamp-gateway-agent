@@ -15,42 +15,41 @@ func (z *ZkClient) Watch(servers, path string) error {
 	conn, _, err := zk.Connect(zks, (60 * time.Second))
 
 	if err == nil {
-		Logger.Notice("ZooKeeper path: %s", path)
+		Log.Notice("ZooKeeper path: %s", path)
 		for {
 			payload, _, watch, err := conn.GetW(path)
 
 			if err != nil {
-				Logger.Error("Error from Zookeeper: " + err.Error())
+				Log.Error("Error from Zookeeper: %s", err.Error())
 				break
 			}
 
-			reload(payload)
+			Reload(payload)
 
 			event := <-watch
 
 			if event.Type == zk.EventNodeDataChanged {
-				Logger.Notice("ZooKeeper configuration changed.")
+				Log.Notice("ZooKeeper configuration changed.")
 			}
 		}
 	} else {
-		Logger.Error("Error connecting to Zookeeper: " + err.Error())
+		Log.Error("Error connecting to Zookeeper: %s", err.Error())
 	}
 
 	if conn != nil {
 		conn.Close()
 	}
 
-	Logger.Notice("ZooKeeper stop monitoring.")
+	Log.Info("ZooKeeper stop monitoring.")
 
 	return nil
 }
 
-func reload(payload []byte) {
-	Logger.Notice("Reloading HaProxy")
-	err := ioutil.WriteFile(haProxy.ConfigFile, payload, 0644)
+func Reload(payload []byte) {
+	err := ioutil.WriteFile(HaProxy.ConfigFile, payload, 0644)
 	if err != nil {
-		Logger.Error("Writing to HaProxy configuration. Reloading abort.")
+		Log.Error("Error writing to HaProxy configuration. Reloading aborted. %s", err.Error())
 	} else {
-		haProxy.Reload()
+		HaProxy.Reload()
 	}
 }
