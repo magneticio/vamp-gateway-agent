@@ -67,7 +67,7 @@ Usage of ./docker.sh:
 
 ```
 
-Available Docker images after build: 
+Docker images after the build: 
 
 - magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:0.8.0
 - magneticio/vamp-gateway-agent_1.5.14-centos-7:0.8.0
