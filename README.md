@@ -70,6 +70,7 @@ Usage of ./docker.sh:
   -h|--help   Help.
   -l|--list   List all available images.
   -c|--clean  Remove all available images.
+  -m|--make   Build vamp-gateway-agent binary.
   -b|--build  Build all available images.
 
 ```

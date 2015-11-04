@@ -18,6 +18,7 @@ function parse_command_line() {
     flag_help=0
     flag_list=0
     flag_clean=0
+    flag_make=0
     flag_build=0
 
     for key in "$@"
@@ -32,7 +33,11 @@ function parse_command_line() {
         -c|--clean)
         flag_clean=1
         ;;
+        -m|--make)
+        flag_make=1
+        ;;
         -b|--build)
+        flag_make=1
         flag_build=1
         ;;
         *)
@@ -46,6 +51,7 @@ function help() {
     echo "${yellow}  -h|--help   ${green}Help.${reset}"
     echo "${yellow}  -l|--list   ${green}List all available images.${reset}"
     echo "${yellow}  -c|--clean  ${green}Remove all available images.${reset}"
+    echo "${yellow}  -m|--make   ${green}Build vamp-gateway-agent binary.${reset}"
     echo "${yellow}  -b|--build  ${green}Build all available images.${reset}"
 }
 
@@ -55,7 +61,12 @@ function go_build() {
     export GOARCH='amd64'
     echo "${green}building ${GOOS}:${GOARCH} ${yellow}${bin}${reset}"
     rm -rf ${target_go} && mkdir -p ${target_go}
+
+    go get github.com/tools/godep
+    godep restore
+    go install
     go build
+
     mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.cfg ${target_go}/.
     cd ${target_go}
     tar -zcf ${assembly_go} *
@@ -91,8 +102,12 @@ function docker_images {
 function process() {
     rm -Rf ${dir}/${target_docker} 2> /dev/null && mkdir -p ${target_docker}
     cp -R ${dir}/docker/* ${dir}/${target_docker}
-    regex="^${target_docker}\/(.+)\/(.+)\/(.+)\/Dockerfile$"
 
+    if [ ${flag_make} -eq 1 ]; then
+        go_build
+    fi
+
+    regex="^${target_docker}\/(.+)\/(.+)\/(.+)\/Dockerfile$"
     images=()
 
     for file in `find ${target_docker} | grep Dockerfile`
@@ -110,7 +125,6 @@ function process() {
             docker_rmi ${image_name}
         fi
         if [ ${flag_build} -eq 1 ]; then
-            go_build
             cp -R ${dir}/${target_go}/${assembly_go} ${target} 2> /dev/null
             docker_build ${image_name} ${target}
         fi
