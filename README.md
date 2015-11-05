@@ -49,14 +49,20 @@ output {
 }
 ```
 
-## Building Binary
+## Building Binary Locally
 
 - `go get github.com/tools/godep`
 - `godep restore`
 - `go install`
 - `go build`
 
-## Building Docker Images
+Alternatively using the `docker.sh` script:
+```
+  ./docker.sh --make
+```
+Deliverable is in `target/go` directory.
+ 
+## Building Docker Images Locally
 
 Directory `docker` contains `Dockerfile`s for the following:
 
@@ -80,3 +86,9 @@ Docker images after the build (e.g. `./docker.sh -b`):
 - magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:0.8.0
 - magneticio/vamp-gateway-agent_1.5.14-centos-7:0.8.0
 - magneticio/vamp-gateway-agent_1.5.14-alpine-3.2:0.8.0 
+
+## Travis CI Build
+
+On each push to `master` branch another commit is pushed to `docker` branch.
+All deliverables from `target/docker` directory are committed to `docker` directory of `docker` branch.
+
