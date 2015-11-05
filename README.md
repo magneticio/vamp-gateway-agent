@@ -41,11 +41,34 @@ Logstash example configuration:
 input {
   udp {
     port => 10001
-    type => haproxy_log
+    type => haproxy
   }
 }
+
+filter {
+  grok {
+    match => ["message", "^.+?]: (?<metrics>{.*})$"]
+    match => ["message", "^.*$"]
+  }
+  if [metrics] =~ /.+/ {
+    json {
+      source => "metrics"
+    }
+    if [t] =~ /.+/ {
+      date {
+        match => ["t", "dd/MMM/YYYY:HH:mm:ss.SSS"]
+      }
+    }
+  }
+}
+
 output {
-  stdout { codec => rubydebug }
+  elasticsearch {
+    hosts => "elasticsearch:9200"
+  }
+  stdout {
+    codec => rubydebug
+  }
 }
 ```
 
