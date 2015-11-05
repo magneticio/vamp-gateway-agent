@@ -8,7 +8,7 @@ import (
 )
 
 func Reader(reader io.Reader, messageChannel chan []byte) {
-	buf := make([]byte, 1024)
+	buf := make([]byte, 4096)
 	for {
 		n, err := reader.Read(buf[:])
 		if err != nil {
@@ -35,13 +35,7 @@ func Sender(host string, port int, messageChannel chan []byte) {
 		return
 	}
 
-	LocalAddress, err := net.ResolveUDPAddr("udp", "127.0.0.1:0")
-	if err != nil {
-		logger.Error("Can't resolve local UDP address: %s", err.Error())
-		return
-	}
-
-	Conn, err := net.DialUDP("udp", LocalAddress, ServerAddress)
+	Conn, err := net.DialUDP("udp", nil, ServerAddress)
 	if err != nil {
 		logger.Error("Can't dial up: %s", err.Error())
 		return
@@ -54,7 +48,7 @@ func Sender(host string, port int, messageChannel chan []byte) {
 		case msg := <-messageChannel:
 
 			if *debug {
-				logger.Debug(fmt.Sprintf("Writing to UDP socket:  %s", msg[:]))
+				logger.Debug(fmt.Sprintf("Writing to UDP socket: %s", msg[:]))
 			}
 
 			_, err := Conn.Write(msg[:])
