@@ -79,9 +79,9 @@ output {
 - `go install`
 - `go build`
 
-Alternatively using the `docker.sh` script:
+Alternatively using the `build.sh` script:
 ```
-  ./docker.sh --make
+  ./build.sh --make
 ```
 Deliverable is in `target/go` directory.
  
@@ -93,9 +93,9 @@ Directory `docker` contains `Dockerfile`s for the following:
 - Ubuntu 14.04, CentOS 7 and Alpine 3.2
 
 ```
-$ ./docker.sh -h
+$ ./build.sh -h
 
-Usage of ./docker.sh:
+Usage of ./build.sh:
   -h|--help   Help.
   -l|--list   List all available images.
   -c|--clean  Remove all available images.
@@ -104,7 +104,7 @@ Usage of ./docker.sh:
 
 ```
 
-Docker images after the build (e.g. `./docker.sh -b`): 
+Docker images after the build (e.g. `./build.sh -b`): 
 
 - magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:0.8.0
 - magneticio/vamp-gateway-agent_1.5.14-centos-7:0.8.0

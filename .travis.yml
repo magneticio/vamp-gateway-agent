@@ -4,7 +4,7 @@ sudo: false
 go:
   - 1.5.1
 
-script: bash docker.sh --make
+script: bash build.sh --make
 
 after_success: |
   if [ -n "$GITHUB_API_KEY" ] && [ ${TRAVIS_PULL_REQUEST} == "false" ] && [ $TRAVIS_BRANCH == "master" ]; then
