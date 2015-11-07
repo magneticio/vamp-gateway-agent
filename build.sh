@@ -9,8 +9,8 @@ yellow=`tput setaf 3`
 version="0.8.0"
 target='target'
 target_docker=${target}'/docker'
-target_go=${target}'/go'
-assembly_go='vamp-gateway-agent.tar.gz'
+target_go=${target}'/vamp'
+assembly_go='vamp.tar.gz'
 
 cd ${dir}
 
@@ -68,9 +68,7 @@ function go_build() {
     go build
 
     mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.cfg ${target_go}/.
-    cd ${target_go}
-    tar -zcf ${assembly_go} *
-    cd ${dir}
+    cd ${target} && tar -zcf ${assembly_go} vamp && mv ${assembly_go} ${dir}/${target_go}/. && cd ${dir}
 }
 
 function docker_rmi {
@@ -79,12 +77,15 @@ function docker_rmi {
 }
 
 function docker_make {
-    echo "${green}appending common code to: $1/Dockerfile ${reset}"
-    echo 'RUN mkdir -p /opt/vamp' >> $1/Dockerfile
-    echo 'COPY vamp-gateway-agent.tar.gz /opt/vamp/' >> $1/Dockerfile
-    echo 'RUN tar -xvzf /opt/vamp/vamp-gateway-agent.tar.gz -C /opt/vamp && rm /opt/vamp/vamp-gateway-agent.tar.gz' >> $1/Dockerfile
-    echo 'EXPOSE 1988' >> $1/Dockerfile
-    echo 'ENTRYPOINT ["/opt/vamp/vamp-gateway-agent"]' >> $1/Dockerfile
+    append_to=$1/Dockerfile
+    echo "${green}appending common code to: ${append_to} ${reset}"
+    function append() {
+        printf "\n$1\n" >> ${append_to}
+    }
+
+    append "ADD ${assembly_go} /opt"
+    append "EXPOSE 1988"
+    append "ENTRYPOINT [\"/opt/vamp/vamp-gateway-agent\"]"
 }
 
 function docker_build {
