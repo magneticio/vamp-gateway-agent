@@ -89,7 +89,7 @@ Deliverable is in `target/go` directory.
 
 Directory `docker` contains `Dockerfile`s for the following:
 
-- HAProxy 1.5.14
+- HAProxy 1.5.15
 - Ubuntu 14.04, CentOS 7 and Alpine 3.2
 
 ```
@@ -106,9 +106,9 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.5.14-ubuntu-14.04:0.8.0
-- magneticio/vamp-gateway-agent_1.5.14-centos-7:0.8.0
-- magneticio/vamp-gateway-agent_1.5.14-alpine-3.2:0.8.0 
+- magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.0
+- magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.0
+- magneticio/vamp-gateway-agent_1.5.15-alpine-3.2:0.8.0 
 
 ## Travis CI Build
 
