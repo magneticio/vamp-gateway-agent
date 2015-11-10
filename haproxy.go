@@ -37,7 +37,7 @@ func (haProxy *HAProxy) Init() {
 	}
 
 	logger.Info(fmt.Sprintf("Opened Unix socket at: %s", haProxy.LogSocket))
-	logChannel := make(chan []byte, 65536)
+	logChannel := make(chan string)
 
 	// Start the logging stream.
 	go Reader(conn, logChannel)
