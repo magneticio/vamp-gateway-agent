@@ -40,11 +40,12 @@ func Logo(version string) string {
 }
 
 func main() {
-	if (logo) {
-		logger.Notice(Logo("0.8.0"))
-	}
 
 	flag.Parse()
+
+	if *logo {
+		logger.Notice(Logo("0.8.0"))
+	}
 
 	logger.Notice("Starting Vamp Gateway Agent")
 
