@@ -18,7 +18,9 @@ var (
 	zooKeeperServers = flag.String("zooKeeperServers", "127.0.0.1:2181", "ZooKeeper servers.")
 	zooKeeperPath = flag.String("zooKeeperPath", "/vamp/gateways/haproxy", "ZooKeeper HAProxy configuration path.")
 
-	debug = flag.Bool("debug", false, "Switches on extra log statements")
+	logo = flag.Bool("logo", true, "Show logo.")
+
+	debug = flag.Bool("debug", false, "Switches on extra log statements.")
 
 	logger = CreateLogger()
 )
@@ -38,7 +40,9 @@ func Logo(version string) string {
 }
 
 func main() {
-	logger.Notice(Logo("0.8.0"))
+	if (logo) {
+		logger.Notice(Logo("0.8.0"))
+	}
 
 	flag.Parse()
 
