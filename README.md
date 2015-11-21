@@ -116,30 +116,30 @@ Build is performed on each push to `master` branch and all directories from `tar
 
 **Alpine**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent_1.5.15-alpine-3.2:0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent_1.5.15-alpine-3.2:0.8.0) 1.5.15-alpine-3.2:0.8.0
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0) 1.5.15-alpine-3.2-0.8.0
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent_1.5.15-alpine-3.2:0.8.0
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0
 ```
 
 **CentOS**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.0) 1.5.15-centos-7:0.8.0
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.0) 1.5.15-centos-7-0.8.0
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.0
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.0
 ```
 
 **Ubuntu**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.0) 1.5.15-ubuntu-14.04:0.8.0
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.0) 1.5.15-ubuntu-14.04-0.8.0
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.0
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.0
 ```
