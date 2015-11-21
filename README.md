@@ -115,6 +115,8 @@ After that Docker Hub Automated Build is triggered.
 
 ## Docker Images
 
+[Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
+
 **Alpine**
 
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0) 1.5.15-alpine-3.2-0.8.0
