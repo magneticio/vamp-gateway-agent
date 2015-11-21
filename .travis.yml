@@ -16,6 +16,10 @@ after_success: |
 
     git clone -b ${VERSION} https://github.com/magneticio/vamp-gateway-agent.git $TMP_DIR > /dev/null 2>&1
 
+    if [ ! -d "$TMP_DIR" ]; then
+      mkdir -p $TMP_DIR
+    fi
+
     rm -fR $TMP_DIR/* > /dev/null 2>&1
     mv -f target/docker/* $TMP_DIR/.
     cp LICENSE $TMP_DIR/.
