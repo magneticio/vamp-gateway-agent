@@ -110,7 +110,8 @@ Docker images after the build (e.g. `./build.sh -b`):
 
 ## Travis CI Build
 
-Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to `docker` branch.
+Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to specific version branch (e.g. 0.8.0).
+After that Docker Hub Automated Build is triggered.
 
 ## Docker Images
 
