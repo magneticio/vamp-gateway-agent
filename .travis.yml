@@ -14,7 +14,7 @@ after_success: |
     git clone -b docker https://github.com/magneticio/vamp-gateway-agent.git $TMP_DIR
 
     rm -fR $TMP_DIR/docker $TMP_DIR/LICENSE $TMP_DIR/README.md
-    mv target/docker $TMP_DIR/.
+    mv -f target/docker/* $TMP_DIR/.
     cp LICENSE $TMP_DIR/.
     cp README.md $TMP_DIR/.
     cd $TMP_DIR
