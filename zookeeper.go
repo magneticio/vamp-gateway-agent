@@ -37,7 +37,7 @@ func (zooKeeper *ZooKeeper) Watch(onChange func([]byte)) {
 			newData, _, err = zooKeeper.Connection.Get(zooKeeper.Path)
 
 			if err != nil {
-				logger.Info("Error reading from ZooKeeper path %s: %s", zooKeeper.Path, err.Error())
+				logger.Info("Reading from ZooKeeper path %s: %s", zooKeeper.Path, err.Error())
 			} else if bytes.Compare(oldData, newData) != 0 {
 				logger.Notice("ZooKeeper %s data has been changed.", zooKeeper.Path)
 				oldData = newData
