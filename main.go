@@ -16,7 +16,7 @@ var (
 	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the remote Logstash instance")
 
 	zooKeeperServers = flag.String("zooKeeperServers", "127.0.0.1:2181", "ZooKeeper servers.")
-	zooKeeperPath = flag.String("zooKeeperPath", "/vamp/gateways/haproxy/1.6", "ZooKeeper HAProxy configuration path.")
+	zooKeeperPath = flag.String("zooKeeperPath", "vamp/gateways/haproxy/1.6", "ZooKeeper HAProxy configuration path.")
 
 	logo = flag.Bool("logo", true, "Show logo.")
 

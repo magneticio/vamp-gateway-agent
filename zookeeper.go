@@ -2,51 +2,86 @@ package main
 
 import (
 	"time"
-	"strings"
-	"github.com/samuel/go-zookeeper/zk"
 	"bytes"
+	"strings"
+
+	"github.com/docker/libkv"
+	"github.com/docker/libkv/store"
+	"github.com/docker/libkv/store/zookeeper"
 )
 
 type ZooKeeper struct {
-	Servers    string
-	Path       string
-	Connection *zk.Conn
+	Servers string
+	Path    string
+	Store   store.Store
 }
 
 func (zooKeeper *ZooKeeper) Init() {
-	logger.Notice("Initializing ZooKeeper connection: %s", zooKeeper.Servers)
-	zks := strings.Split(zooKeeper.Servers, ",")
-	conn, _, err := zk.Connect(zks, 60 * time.Second)
+	zookeeper.Register()
+}
 
+func (zooKeeper *ZooKeeper) Connect() (error) {
+	logger.Notice("Openning ZooKeeper connection: %s", zooKeeper.Servers)
+	zks := strings.Split(zooKeeper.Servers, ",")
+
+	kv, err := libkv.NewStore(
+		store.ZK,
+		zks,
+		&store.Config{
+			ConnectionTimeout: 60 * time.Second,
+		},
+	)
 	if err != nil {
-		logger.Fatal("Error trying to connect to Zookeeper: %s", err.Error())
+		logger.Fatal("Error trying to connect to Zookeeper: ", err.Error())
 	} else {
-		zooKeeper.Connection = conn
+		zooKeeper.Store = kv
 	}
+
+	return err
+}
+
+func (zooKeeper *ZooKeeper) Close() {
+	zooKeeper.Store.Close()
 }
 
 func (zooKeeper *ZooKeeper) Watch(onChange func([]byte)) {
-	var err error
-	var oldData, newData []byte
+	var data []byte
 	for {
-		if zooKeeper.Connection.State() == zk.StateHasSession {
-			if *debug {
-				logger.Debug("ZooKeeper connection state: %s", zk.StateHasSession)
-			}
-			// Using GetW(path) would crash the process due to some bug in ZooKeeper client (ZooKeeper start/stop).
-			newData, _, err = zooKeeper.Connection.Get(zooKeeper.Path)
 
-			if err != nil {
-				logger.Info("Reading from ZooKeeper path %s: %s", zooKeeper.Path, err.Error())
-			} else if bytes.Compare(oldData, newData) != 0 {
-				logger.Notice("ZooKeeper %s data has been changed.", zooKeeper.Path)
-				oldData = newData
-				onChange(oldData)
+		err := zooKeeper.Connect()
+
+		if err == nil {
+
+			// Listening for the value change doesn't work if ZK server is restarted, thus using polling
+
+			for {
+				exists, err := zooKeeper.Store.Exists(zooKeeper.Path)
+
+				if err != nil {
+					logger.Info("Error trying to connect to Zookeeper: ", err.Error())
+					zooKeeper.Close()
+					break
+
+				} else {
+					if exists {
+						pair, err := zooKeeper.Store.Get(zooKeeper.Path)
+
+						if err != nil {
+							logger.Info("Reading from ZooKeeper path %s: %s", zooKeeper.Path, err.Error())
+						} else if bytes.Compare(data, pair.Value) != 0 {
+							logger.Notice("ZooKeeper %s data has been changed.", zooKeeper.Path)
+							data = pair.Value
+							onChange(data)
+						}
+					} else {
+						logger.Info("ZooKeeper path does not exist: %s", zooKeeper.Path)
+					}
+				}
+
+				time.Sleep(1 * time.Second)
 			}
-		} else {
-			logger.Info("ZooKeeper connection state: %s", zooKeeper.Connection.State())
 		}
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 }
