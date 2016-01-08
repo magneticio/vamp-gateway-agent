@@ -40,8 +40,7 @@ func Logo(version string) string {
                                       `
 }
 
-type KayValueWatcher interface {
-	Init()
+type Watcher interface {
 	Watch(onChange func([]byte))
 }
 
@@ -98,13 +97,12 @@ func main() {
 		return
 	}
 
-	keyValueWatcher.Init()
 	go keyValueWatcher.Watch(haProxy.Reload)
 
 	waiter <- true
 }
 
-func keyValueWatcher() KayValueWatcher {
+func keyValueWatcher() Watcher {
 	if *storeType == "zookeeper" {
 		return &ZooKeeper{
 			Servers: *storeServers,

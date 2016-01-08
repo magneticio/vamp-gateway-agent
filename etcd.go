@@ -15,7 +15,7 @@ type Etcd struct {
 	KApi    client.KeysAPI
 }
 
-func (etcd *Etcd) Init() {
+func (etcd *Etcd) init() {
 	logger.Notice("Initializing etcd connection: %s", etcd.Servers)
 	servers := strings.Split(etcd.Servers, ",")
 	cfg := client.Config{
@@ -33,38 +33,39 @@ func (etcd *Etcd) Init() {
 
 func (etcd *Etcd) Watch(onChange func([]byte)) {
 
-	var oldData, newData []byte
+	etcd.init()
 
-	opts := &client.WatcherOptions{Recursive: false}
-	key := strings.TrimPrefix(etcd.Path, "/")
-	watcher := etcd.KApi.Watcher(key, opts)
-
-	result, err := etcd.KApi.Get(context.Background(), etcd.Path, nil)
-	if err == nil {
-		oldData = []byte(result.Node.Value)
-		logger.Info("Etcd %s data has been read.", etcd.Path)
-		onChange(oldData)
-	} else {
-		logger.Info("Etcd reading initial data: %s", err.Error())
-	}
+	var data []byte
 
 	for {
+		opts := &client.WatcherOptions{Recursive: false}
+		key := strings.TrimPrefix(etcd.Path, "/")
+		watcher := etcd.KApi.Watcher(key, opts)
+
+		result, err := etcd.KApi.Get(context.Background(), etcd.Path, nil)
+		if err == nil {
+			data = etcd.change(data, []byte(result.Node.Value), onChange)
+		}
+
 		logger.Info("Watching for Etcd change of: ", etcd.Path)
 		for {
 			result, err := watcher.Next(context.Background())
 			if err != nil {
-				logger.Info("Etcd connection error: %s", err.Error())
+				logger.Info("Etcd connection error: %s", err)
 				break
 			}
-
-			newData = []byte(result.Node.Value)
-			if bytes.Compare(oldData, newData) != 0 {
-				logger.Notice("Etcd %s data has been changed.", etcd.Path)
-				oldData = newData
-				onChange(oldData)
-			}
+			data = etcd.change(data, []byte(result.Node.Value), onChange)
 		}
-		time.Sleep(30 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
+}
+
+func (etcd *Etcd) change(oldData []byte, newData []byte, onChange func([]byte)) []byte {
+	if bytes.Compare(oldData, newData) != 0 {
+		logger.Notice("Etcd %s data has been changed.", etcd.Path)
+		onChange(oldData)
+		return newData
+	}
+	return oldData
 }
 

@@ -14,7 +14,7 @@ type ZooKeeper struct {
 	Connection *zk.Conn
 }
 
-func (zooKeeper *ZooKeeper) Init() {
+func (zooKeeper *ZooKeeper) init() {
 	logger.Notice("Initializing ZooKeeper connection: %s", zooKeeper.Servers)
 	servers := strings.Split(zooKeeper.Servers, ",")
 	conn, _, err := zk.Connect(servers, 60 * time.Second)
@@ -27,6 +27,9 @@ func (zooKeeper *ZooKeeper) Init() {
 }
 
 func (zooKeeper *ZooKeeper) Watch(onChange func([]byte)) {
+
+	zooKeeper.init()
+
 	var err error
 	var oldData, newData []byte
 	for {
