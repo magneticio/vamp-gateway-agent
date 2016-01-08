@@ -15,8 +15,9 @@ var (
 	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the remote Logstash instance")
 	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the remote Logstash instance")
 
-	zooKeeperServers = flag.String("zooKeeperServers", "127.0.0.1:2181", "ZooKeeper servers.")
-	zooKeeperPath = flag.String("zooKeeperPath", "/vamp/gateways/haproxy/1.6", "ZooKeeper HAProxy configuration path.")
+	storeType = flag.String("storeType", "zookeeper", "zookeeper, consul or etcd.")
+	storeServers = flag.String("storeServers", "127.0.0.1:2181", "Key-value store servers.")
+	configurationPath = flag.String("configurationPath", "vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
 
 	logo = flag.Bool("logo", true, "Show logo.")
 
@@ -56,11 +57,6 @@ func main() {
 		LogSocket:  HAProxyPath + "haproxy.log.sock",
 	}
 
-	zooKeeper := ZooKeeper{
-		Servers: *zooKeeperServers,
-		Path: *zooKeeperPath,
-	}
-
 	// Waiter keeps the program from exiting instantly.
 	waiter := make(chan bool)
 
@@ -81,8 +77,28 @@ func main() {
 	haProxy.Init()
 	haProxy.Run()
 
-	zooKeeper.Init()
-	go zooKeeper.Watch(haProxy.Reload)
+	keyValue(haProxy)
 
 	waiter <- true
 }
+
+func keyValue(haProxy HAProxy) {
+	if *storeType == "zookeeper" {
+		zooKeeper := ZooKeeper{
+			Servers: *storeServers,
+			Path: *configurationPath,
+		}
+		zooKeeper.Init()
+		go zooKeeper.Watch(haProxy.Reload)
+	} else if *storeType == "etcd" {
+		etcd := Etcd{
+			Servers: *storeServers,
+			Path: *configurationPath,
+		}
+		etcd.Init()
+		go etcd.Watch(haProxy.Reload)
+	} else {
+		logger.Panic("Key-value store type not supported: ", *storeType)
+	}
+}
+
