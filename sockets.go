@@ -40,6 +40,8 @@ func Sender(host string, port int, messageChannel chan string) {
 			if err != nil {
 				logger.Error("Can't dial up: %s", err.Error())
 			} else {
+				defer Conn.Close()
+
 				for {
 					select {
 					case message := <-messageChannel:
