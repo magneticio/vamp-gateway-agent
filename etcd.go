@@ -49,10 +49,9 @@ func (etcd *Etcd) Watch(onChange func([]byte)) {
 	}
 
 	for {
+		logger.Info("Watching for Etcd change of: ", etcd.Path)
 		for {
-			logger.Info("Watching for Etcd change of: ", etcd.Path)
 			result, err := watcher.Next(context.Background())
-
 			if err != nil {
 				logger.Info("Etcd connection error: %s", err.Error())
 				break

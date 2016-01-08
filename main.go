@@ -15,9 +15,9 @@ var (
 	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the remote Logstash instance")
 	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the remote Logstash instance")
 
-	storeType = flag.String("storeType", "zookeeper", "zookeeper, consul or etcd.")
-	storeServers = flag.String("storeServers", "127.0.0.1:2181", "Key-value store servers.")
-	configurationPath = flag.String("configurationPath", "vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
+	storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
+	storeServers = flag.String("storeServers", "", "Key-value store servers.")
+	configurationPath = flag.String("configurationPath", "/vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
 
 	logo = flag.Bool("logo", true, "Show logo.")
 
@@ -40,12 +40,27 @@ func Logo(version string) string {
                                       `
 }
 
+type KayValueWatcher interface {
+	Init()
+	Watch(onChange func([]byte))
+}
+
 func main() {
 
 	flag.Parse()
 
 	if *logo {
 		logger.Notice(Logo("0.8.2"))
+	}
+
+	if len(*storeType) == 0 {
+		logger.Panic("Key-value store type not speciffed.")
+		return
+	}
+
+	if len(*storeServers) == 0 {
+		logger.Panic("Key-value store servers not speciffed.")
+		return
 	}
 
 	logger.Notice("Starting Vamp Gateway Agent")
@@ -77,28 +92,31 @@ func main() {
 	haProxy.Init()
 	haProxy.Run()
 
-	keyValue(haProxy)
+	keyValueWatcher := keyValueWatcher()
+
+	if keyValueWatcher == nil {
+		return
+	}
+
+	keyValueWatcher.Init()
+	go keyValueWatcher.Watch(haProxy.Reload)
 
 	waiter <- true
 }
 
-func keyValue(haProxy HAProxy) {
+func keyValueWatcher() KayValueWatcher {
 	if *storeType == "zookeeper" {
-		zooKeeper := ZooKeeper{
+		return &ZooKeeper{
 			Servers: *storeServers,
 			Path: *configurationPath,
 		}
-		zooKeeper.Init()
-		go zooKeeper.Watch(haProxy.Reload)
 	} else if *storeType == "etcd" {
-		etcd := Etcd{
+		return &Etcd{
 			Servers: *storeServers,
 			Path: *configurationPath,
 		}
-		etcd.Init()
-		go etcd.Watch(haProxy.Reload)
 	} else {
 		logger.Panic("Key-value store type not supported: ", *storeType)
+		return nil
 	}
 }
-
