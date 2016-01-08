@@ -1,14 +1,37 @@
 {
 	"ImportPath": "github.com/magneticio/vamp-gateway-agent",
-	"GoVersion": "go1.5.1",
+	"GoVersion": "go1.5.2",
 	"Deps": [
 		{
+			"ImportPath": "github.com/coreos/etcd/client",
+			"Comment": "v2.3.0-alpha.0-416-gcb3ca4f",
+			"Rev": "cb3ca4f8fbc58a900e3b606c40b84d137a9b7abf"
+		},
+		{
+			"ImportPath": "github.com/coreos/etcd/pkg/pathutil",
+			"Comment": "v2.3.0-alpha.0-416-gcb3ca4f",
+			"Rev": "cb3ca4f8fbc58a900e3b606c40b84d137a9b7abf"
+		},
+		{
+			"ImportPath": "github.com/coreos/etcd/pkg/types",
+			"Comment": "v2.3.0-alpha.0-416-gcb3ca4f",
+			"Rev": "cb3ca4f8fbc58a900e3b606c40b84d137a9b7abf"
+		},
+		{
 			"ImportPath": "github.com/op/go-logging",
-			"Rev": "fb0230561a6ba1cab17beb95f1faedc16584fdb8"
+			"Rev": "dfaf3dff9b631bc4236201d90d41ee0de9202889"
 		},
 		{
 			"ImportPath": "github.com/samuel/go-zookeeper/zk",
-			"Rev": "9a466eec51e72221d972768a15f025bf096fc3e0"
+			"Rev": "218e9c81c0dd8b3b18172b2bbfad92cc7d6db55f"
+		},
+		{
+			"ImportPath": "github.com/ugorji/go/codec",
+			"Rev": "646ae4a518c1c3be0739df898118d9bccf993858"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "9946ad7d5eae91d8edca4f54d1a1e130a052e823"
 		}
 	]
 }

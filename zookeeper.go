@@ -2,9 +2,10 @@ package main
 
 import (
 	"time"
-	"strings"
-	"github.com/samuel/go-zookeeper/zk"
 	"bytes"
+	"strings"
+
+	"github.com/samuel/go-zookeeper/zk"
 )
 
 type ZooKeeper struct {
@@ -15,8 +16,8 @@ type ZooKeeper struct {
 
 func (zooKeeper *ZooKeeper) Init() {
 	logger.Notice("Initializing ZooKeeper connection: %s", zooKeeper.Servers)
-	zks := strings.Split(zooKeeper.Servers, ",")
-	conn, _, err := zk.Connect(zks, 60 * time.Second)
+	servers := strings.Split(zooKeeper.Servers, ",")
+	conn, _, err := zk.Connect(servers, 60 * time.Second)
 
 	if err != nil {
 		logger.Fatal("Error trying to connect to Zookeeper: %s", err.Error())
@@ -47,6 +48,6 @@ func (zooKeeper *ZooKeeper) Watch(onChange func([]byte)) {
 			logger.Info("ZooKeeper connection state: %s", zooKeeper.Connection.State())
 		}
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 }
