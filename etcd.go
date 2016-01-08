@@ -63,7 +63,7 @@ func (etcd *Etcd) Watch(onChange func([]byte)) {
 func (etcd *Etcd) change(oldData []byte, newData []byte, onChange func([]byte)) []byte {
 	if bytes.Compare(oldData, newData) != 0 {
 		logger.Notice("Etcd %s data has been changed.", etcd.Path)
-		onChange(oldData)
+		onChange(newData)
 		return newData
 	}
 	return oldData
