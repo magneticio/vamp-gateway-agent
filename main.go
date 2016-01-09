@@ -14,11 +14,11 @@ const (
 )
 
 var (
-	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the remote Logstash instance")
-	logstashPort = flag.Int("logstashPort", 10001, "The TCP input port of the remote Logstash instance")
+	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the Logstash instance")
+	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the Logstash instance")
 
 	storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
-	storeConnection = flag.String("storeConnection", "", "Key-value store servers.")
+	storeConnection = flag.String("storeConnection", "", "Key-value store connection string.")
 	configurationPath = flag.String("configurationPath", "/vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
 
 	logo = flag.Bool("logo", true, "Show logo.")

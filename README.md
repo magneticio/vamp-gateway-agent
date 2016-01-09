@@ -6,28 +6,30 @@ HAProxy with configuration from ZooKeeper
 
 [HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to: 
 
-- read the HAProxy configuration from ZooKeeper and reloads the HAProxy on each configuration change with as close to zero client request interruption as possible.
+- read the HAProxy configuration from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/) and reloads the HAProxy on each configuration change with as close to zero client request interruption as possible.
 - read the logs from HAProxy over socket and push them to Logstash over UDP.
-- handle and recover from ZooKeeper and Logstash outages without interrupting the haproxy process and client requests.
+- handle and recover from ZooKeeper, etcd, Consul and Logstash outages without interrupting the haproxy process and client requests.
 
 ## Usage
 
 ```
-$ ./vamp-proxy-agent -h
+$ ./vamp-gateway-agent: -h
                                        
 Usage of ./vamp-gateway-agent:
-  -debug
-        Switches on extra log statements.
-  -logo
-        Show logo. (default true)
-  -logstashHost string
-        Address of the remote Logstash instance (default "127.0.0.1")
-  -logstashPort int
-        The UDP input port of the remote Logstash instance (default 10001)
-  -zooKeeperPath string
-        ZooKeeper HAProxy configuration path. (default "/vamp/gateways/haproxy")
-  -zooKeeperServers string
-        ZooKeeper servers. (default "127.0.0.1:2181")
+    -configurationPath string
+          HAProxy configuration path. (default "/vamp/gateways/haproxy/1.6")
+    -debug
+          Switches on extra log statements.
+    -logo
+          Show logo. (default true)
+    -logstashHost string
+          Address of the Logstash instance (default "127.0.0.1")
+    -logstashPort int
+          The UDP input port of the Logstash instance (default 10001)
+    -storeConnection string
+          Key-value store connection string.
+    -storeType string
+          zookeeper, etcd or consul.
 ```
 
 Logstash example configuration:
@@ -67,7 +69,7 @@ output {
 }
 ```
 
-**Note:** Logstash configuration depends on HAProxy log configuration and that is not in the scope of the agent (HAProxy configuration is retrieved from ZooKeeper). 
+**Note:** Logstash configuration depends on HAProxy log configuration and that is not in the scope of the agent (HAProxy configuration is retrieved from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/)). 
 
 ## Building Binary
 
@@ -86,8 +88,8 @@ Deliverable is in `target/go` directory.
 
 Directory `docker` contains `Dockerfile`s for the following:
 
-- HAProxy 1.5.15
-- Ubuntu 14.04, CentOS 7 and Alpine 3.2
+- HAProxy 1.6.3
+- Ubuntu 14.04, CentOS 7 and Alpine 3.3
 
 ```
 $ ./build.sh -h
@@ -104,9 +106,9 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.0
-- magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.0
-- magneticio/vamp-gateway-agent_1.5.15-alpine-3.2:0.8.0 
+- magneticio/vamp-gateway-agent_1.6.3-ubuntu-14.04:0.8.0
+- magneticio/vamp-gateway-agent_1.6.3-centos-7:0.8.0
+- magneticio/vamp-gateway-agent_1.6.3-alpine-3.3:0.8.0 
 
 ## Travis CI Build
 
@@ -119,30 +121,30 @@ After that Docker Hub Automated Build is triggered.
 
 **Alpine**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0) 1.5.15-alpine-3.2-0.8.0
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.0) 1.6.3-alpine-3.3-0.8.0
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.5.15-alpine-3.2-0.8.0
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.0
 ```
 
 **CentOS**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.0) 1.5.15-centos-7-0.8.0
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.0) 1.6.3-centos-7-0.8.0
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.0
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.0
 ```
 
 **Ubuntu**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.0) 1.5.15-ubuntu-14.04-0.8.0
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.0) 1.6.3-ubuntu-14.04-0.8.0
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.0
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.0
 ```
