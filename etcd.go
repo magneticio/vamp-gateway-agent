@@ -9,19 +9,19 @@ import (
 )
 
 type Etcd struct {
-	Servers string
-	Path    string
-	KApi    client.KeysAPI
+	ConnectionString string
+	Path             string
+	KApi             client.KeysAPI
 }
 
 func (etcd *Etcd) init() {
-	logger.Notice("Initializing etcd connection: %s", etcd.Servers)
-	servers := strings.Split(etcd.Servers, ",")
+	logger.Notice("Initializing etcd connection: %s", etcd.ConnectionString)
+	servers := strings.Split(etcd.ConnectionString, ",")
 	cfg := client.Config{
 		Endpoints:               servers,
 		Transport:               client.DefaultTransport,
 		// set timeout per request to fail fast when the target endpoint is unavailable
-		HeaderTimeoutPerRequest: 5 * time.Second,
+		HeaderTimeoutPerRequest: Timeout,
 	}
 	c, err := client.New(cfg)
 	if err != nil {
@@ -52,6 +52,6 @@ func (etcd *Etcd) Watch(onChange func([]byte) error) {
 			}
 			onChange([]byte(result.Node.Value))
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(Timeout)
 	}
 }

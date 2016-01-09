@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"time"
 	"flag"
 	"syscall"
 	"os/signal"
@@ -9,6 +10,7 @@ import (
 
 const (
 	HAProxyPath = "/opt/vamp/"
+	Timeout = 5 * time.Second
 )
 
 var (
@@ -16,7 +18,7 @@ var (
 	logstashPort = flag.Int("logstashPort", 10001, "The TCP input port of the remote Logstash instance")
 
 	storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
-	storeServers = flag.String("storeServers", "", "Key-value store servers.")
+	storeConnection = flag.String("storeConnection", "", "Key-value store servers.")
 	configurationPath = flag.String("configurationPath", "/vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
 
 	logo = flag.Bool("logo", true, "Show logo.")
@@ -57,7 +59,7 @@ func main() {
 		return
 	}
 
-	if len(*storeServers) == 0 {
+	if len(*storeConnection) == 0 {
 		logger.Panic("Key-value store servers not speciffed.")
 		return
 	}
@@ -103,14 +105,19 @@ func main() {
 }
 
 func keyValueWatcher() Watcher {
-	if *storeType == "zookeeper" {
-		return &ZooKeeper{
-			Servers: *storeServers,
+	if *storeType == "etcd" {
+		return &Etcd{
+			ConnectionString: *storeConnection,
 			Path: *configurationPath,
 		}
-	} else if *storeType == "etcd" {
-		return &Etcd{
-			Servers: *storeServers,
+	} else if *storeType == "consul" {
+		return &Consul{
+			ConnectionString: *storeConnection,
+			Path: *configurationPath,
+		}
+	} else if *storeType == "zookeeper" {
+		return &ZooKeeper{
+			ConnectionString: *storeConnection,
 			Path: *configurationPath,
 		}
 	} else {

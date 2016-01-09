@@ -8,14 +8,14 @@ import (
 )
 
 type ZooKeeper struct {
-	Servers    string
-	Path       string
-	Connection *zk.Conn
+	ConnectionString string
+	Path             string
+	Connection       *zk.Conn
 }
 
 func (zooKeeper *ZooKeeper) init() {
-	logger.Notice("Initializing ZooKeeper connection: %s", zooKeeper.Servers)
-	servers := strings.Split(zooKeeper.Servers, ",")
+	logger.Notice("Initializing ZooKeeper connection: %s", zooKeeper.ConnectionString)
+	servers := strings.Split(zooKeeper.ConnectionString, ",")
 	conn, _, err := zk.Connect(servers, 60 * time.Second)
 
 	if err != nil {
