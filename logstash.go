@@ -14,7 +14,7 @@ type Logstash struct {
 }
 
 func (logstash *Logstash) Pipe() {
-	logstash.channel = make(chan string, 16384)
+	logstash.channel = make(chan string, 4096)
 
 	go logstash.reader()
 	go logstash.sender()
@@ -38,6 +38,9 @@ func (logstash *Logstash) reader() {
 		select {
 		case logstash.channel <- message:
 		default:
+		    // dropping old messages if channel is full
+			<-logstash.channel
+			logstash.channel <- message
 		}
 	}
 }
