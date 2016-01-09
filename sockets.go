@@ -32,27 +32,27 @@ func Reader(reader io.Reader, messageChannel chan string) {
 
 func Sender(host string, port int, messageChannel chan string) {
 	for {
-		ServerAddress, err := net.ResolveUDPAddr("udp", host + ":" + strconv.Itoa(port))
+		ServerAddress, err := net.ResolveTCPAddr("tcp", host + ":" + strconv.Itoa(port))
 		if err != nil {
-			logger.Error("Can't resolve remote UDP address: %s", err.Error())
+			logger.Error("Can't resolve remote TCP address: %s", err.Error())
 		} else {
-			Conn, err := net.DialUDP("udp", nil, ServerAddress)
+			Conn, err := net.DialTCP("tcp", nil, ServerAddress)
 			if err != nil {
 				logger.Error("Can't dial up: %s", err.Error())
 			} else {
-				defer Conn.Close()
-
 				for {
 					select {
 					case message := <-messageChannel:
 
 						if *debug {
-							logger.Debug(fmt.Sprintf("Writing to UDP socket: %s", message))
+							logger.Debug(fmt.Sprintf("Writing to TCP socket: %s", message))
 						}
 
 						_, err := Conn.Write([]byte(message))
 						if err != nil {
 							logger.Error("Can't write: %s", err.Error())
+							Conn.Close()
+							break
 						}
 					}
 				}

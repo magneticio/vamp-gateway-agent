@@ -13,7 +13,7 @@ const (
 
 var (
 	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the remote Logstash instance")
-	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the remote Logstash instance")
+	logstashPort = flag.Int("logstashPort", 10001, "The TCP input port of the remote Logstash instance")
 
 	storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
 	storeServers = flag.String("storeServers", "", "Key-value store servers.")
