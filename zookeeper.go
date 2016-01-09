@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-	"bytes"
 	"strings"
 
 	"github.com/samuel/go-zookeeper/zk"
@@ -26,31 +25,29 @@ func (zooKeeper *ZooKeeper) init() {
 	}
 }
 
-func (zooKeeper *ZooKeeper) Watch(onChange func([]byte)) {
+func (zooKeeper *ZooKeeper) Watch(onChange func([]byte) error) {
 
 	zooKeeper.init()
 
 	var err error
-	var oldData, newData []byte
+	var data []byte
 	for {
 		if zooKeeper.Connection.State() == zk.StateHasSession {
 			if *debug {
 				logger.Debug("ZooKeeper connection state: %s", zk.StateHasSession)
 			}
 			// Using GetW(path) would crash the process due to some bug in ZooKeeper client (ZooKeeper start/stop).
-			newData, _, err = zooKeeper.Connection.Get(zooKeeper.Path)
+			data, _, err = zooKeeper.Connection.Get(zooKeeper.Path)
 
 			if err != nil {
 				logger.Info("Reading from ZooKeeper path %s: %s", zooKeeper.Path, err.Error())
-			} else if bytes.Compare(oldData, newData) != 0 {
-				logger.Notice("ZooKeeper %s data has been changed.", zooKeeper.Path)
-				oldData = newData
-				onChange(oldData)
+			} else {
+				onChange(data)
 			}
 		} else {
 			logger.Info("ZooKeeper connection state: %s", zooKeeper.Connection.State())
 		}
 
-		time.Sleep(5 * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 }

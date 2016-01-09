@@ -41,7 +41,7 @@ func Logo(version string) string {
 }
 
 type Watcher interface {
-	Watch(onChange func([]byte))
+	Watch(onChange func([]byte) error)
 }
 
 func main() {

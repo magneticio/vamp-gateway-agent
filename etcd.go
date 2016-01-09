@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-	"bytes"
 	"strings"
 
 	"golang.org/x/net/context"
@@ -31,11 +30,8 @@ func (etcd *Etcd) init() {
 	etcd.KApi = client.NewKeysAPI(c)
 }
 
-func (etcd *Etcd) Watch(onChange func([]byte)) {
-
+func (etcd *Etcd) Watch(onChange func([]byte) error) {
 	etcd.init()
-
-	var data []byte
 
 	for {
 		opts := &client.WatcherOptions{Recursive: false}
@@ -44,28 +40,18 @@ func (etcd *Etcd) Watch(onChange func([]byte)) {
 
 		result, err := etcd.KApi.Get(context.Background(), etcd.Path, nil)
 		if err == nil {
-			data = etcd.change(data, []byte(result.Node.Value), onChange)
+			onChange([]byte(result.Node.Value))
 		}
 
-		logger.Info("Watching for Etcd change of: ", etcd.Path)
+		logger.Infof("Watching for Etcd change of: %s", etcd.Path)
 		for {
 			result, err := watcher.Next(context.Background())
 			if err != nil {
 				logger.Info("Etcd connection error: %s", err)
 				break
 			}
-			data = etcd.change(data, []byte(result.Node.Value), onChange)
+			onChange([]byte(result.Node.Value))
 		}
 		time.Sleep(5 * time.Second)
 	}
 }
-
-func (etcd *Etcd) change(oldData []byte, newData []byte, onChange func([]byte)) []byte {
-	if bytes.Compare(oldData, newData) != 0 {
-		logger.Notice("Etcd %s data has been changed.", etcd.Path)
-		onChange(newData)
-		return newData
-	}
-	return oldData
-}
-
