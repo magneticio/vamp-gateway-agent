@@ -18,6 +18,20 @@
 			"Rev": "cb3ca4f8fbc58a900e3b606c40b84d137a9b7abf"
 		},
 		{
+			"ImportPath": "github.com/hashicorp/consul/api",
+			"Comment": "v0.6.1-7-g81cac9a",
+			"Rev": "81cac9aaa5c56aa42fe33e031dc65260ba31a373"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/go-cleanhttp",
+			"Rev": "ce617e79981a8fff618bb643d155133a8f38db96"
+		},
+		{
+			"ImportPath": "github.com/hashicorp/serf/coordinate",
+			"Comment": "v0.7.0-1-g39c7c06",
+			"Rev": "39c7c06298b480560202bec00c2c77e974e88792"
+		},
+		{
 			"ImportPath": "github.com/op/go-logging",
 			"Rev": "dfaf3dff9b631bc4236201d90d41ee0de9202889"
 		},
