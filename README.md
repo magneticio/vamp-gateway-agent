@@ -1,6 +1,6 @@
 # Vamp Gateway Agent
 
-HAProxy with configuration from ZooKeeper
+HAProxy with configuration from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/).
 
 [![Build Status](https://travis-ci.org/magneticio/vamp-gateway-agent.svg?branch=master)](https://travis-ci.org/magneticio/vamp-gateway-agent)
 
