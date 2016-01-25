@@ -10,16 +10,23 @@ HAProxy with configuration from [ZooKeeper](https://zookeeper.apache.org/), [etc
 - read the logs from HAProxy over socket and push them to Logstash over UDP.
 - handle and recover from ZooKeeper, etcd, Consul and Logstash outages without interrupting the haproxy process and client requests.
 
+It is possible to specify a custom configuration (based on arguments `configurationPath/configurationBasicFile`).
+In that case any configuration read from KV store is appended to the content of custom configuration, stored as `configurationPath/haproxy.cnf` and used for the next HAProxy reload.
+
 ## Usage
 
 ```
 $ ./vamp-gateway-agent: -h
                                        
 Usage of ./vamp-gateway-agent:
+    -configurationBasicFile string
+          Basic HAProxy configuration. (default "haproxy.basic.cfg")
     -configurationPath string
-          HAProxy configuration path. (default "/vamp/gateways/haproxy/1.6")
+          HAProxy configuration path. (default "/opt/vamp/")
     -debug
           Switches on extra log statements.
+    -help
+          Print usage.
     -logo
           Show logo. (default true)
     -logstashHost string
@@ -28,8 +35,10 @@ Usage of ./vamp-gateway-agent:
           The UDP input port of the Logstash instance (default 10001)
     -storeConnection string
           Key-value store connection string.
+    -storeKey string
+          HAProxy configuration store key. (default "/vamp/gateways/haproxy/1.6")
     -storeType string
-          zookeeper, etcd or consul.
+          zookeeper, consul or etcd.
 ```
 
 Logstash example configuration:

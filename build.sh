@@ -46,7 +46,7 @@ function parse_command_line() {
     done
 }
 
-function help() {
+function build_help() {
     echo "${green}Usage of $0:${reset}"
     echo "${yellow}  -h|--help   ${green}Help.${reset}"
     echo "${yellow}  -l|--list   ${green}List all available images.${reset}"
@@ -67,7 +67,7 @@ function go_build() {
     go install
     CGO_ENABLED=0 go build -v -a -installsuffix cgo
 
-    mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.cfg ${target_go}/.
+    mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.basic.cfg ${target_go}/.
     cd ${target} && tar -zcf ${assembly_go} vamp && mv ${assembly_go} ${dir}/${target_go}/. && cd ${dir}
 }
 
@@ -146,7 +146,7 @@ function process() {
 parse_command_line $@
 
 if [ ${flag_help} -eq 1 ] || [[ $# -eq 0 ]]; then
-    help
+    build_help
 fi
 
 if [ ${flag_list} -eq 1 ] || [ ${flag_clean} -eq 1 ] || [ ${flag_make} -eq 1 ] || [ ${flag_build} -eq 1 ]; then

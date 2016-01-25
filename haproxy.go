@@ -12,10 +12,11 @@ import (
 )
 
 type HAProxy struct {
-	Binary     string
-	PidFile    string
-	ConfigFile string
-	LogSocket  string
+	Binary      string
+	PidFile     string
+	BasicConfig string
+	ConfigFile  string
+	LogSocket   string
 }
 
 func (haProxy *HAProxy) Init() {
@@ -89,18 +90,25 @@ func (haProxy *HAProxy) Run() error {
 }
 
 func (haProxy *HAProxy) Reload(configuration []byte) error {
+	basic, err := ioutil.ReadFile(haProxy.BasicConfig)
+	if err != nil {
+		logger.Error("Cannot read basic HAProxy configuration: %s", err.Error())
+		return err
+	}
 
-	if !haProxy.changed(configuration) {
+	content := append(basic[:], configuration[:]...)
+
+	if !haProxy.changed(content) {
 		if *debug {
 			logger.Debug("Configuration change has been triggered, but no change in data.")
 		}
 		return nil
 	}
 
-	err := haProxy.validate(configuration)
+	err = haProxy.validate(content)
 
 	if err == nil {
-		err = ioutil.WriteFile(haProxy.ConfigFile, configuration, 0644)
+		err = ioutil.WriteFile(haProxy.ConfigFile, content, 0644)
 		if err != nil {
 			logger.Error("Error writing to HAProxy configuration. Reloading aborted. %s", err.Error())
 			return err

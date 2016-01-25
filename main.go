@@ -6,10 +6,10 @@ import (
 	"flag"
 	"syscall"
 	"os/signal"
+	"io/ioutil"
 )
 
 const (
-	HAProxyPath = "/opt/vamp/"
 	Timeout = 5 * time.Second
 )
 
@@ -19,9 +19,12 @@ var (
 
 	storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
 	storeConnection = flag.String("storeConnection", "", "Key-value store connection string.")
-	configurationPath = flag.String("configurationPath", "/vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
+	storeKey = flag.String("storeKey", "/vamp/gateways/haproxy/1.6", "HAProxy configuration store key.")
+	configurationPath = flag.String("configurationPath", "/opt/vamp/", "HAProxy configuration path.")
+	configurationBasicFile = flag.String("configurationBasicFile", "haproxy.basic.cfg", "Basic HAProxy configuration.")
 
 	logo = flag.Bool("logo", true, "Show logo.")
+	help = flag.Bool("help", false, "Print usage.")
 	debug = flag.Bool("debug", false, "Switches on extra log statements.")
 
 	logger = CreateLogger()
@@ -47,12 +50,15 @@ type Watcher interface {
 
 func main() {
 
-	flag.Bool("help", false, "Print usage.")
-
 	flag.Parse()
 
 	if *logo {
 		logger.Notice(Logo("0.8.2"))
+	}
+
+	if *help {
+		flag.Usage()
+		return
 	}
 
 	if len(*storeType) == 0 {
@@ -65,13 +71,28 @@ func main() {
 		return
 	}
 
+	if _, err := os.Stat(*configurationPath + *configurationBasicFile); os.IsNotExist(err) {
+		logger.Panic("No basic HAProxy configuration: ", *configurationPath, *configurationBasicFile)
+		return
+	}
+
 	logger.Notice("Starting Vamp Gateway Agent")
 
 	haProxy := HAProxy{
-		Binary:     "haproxy",
-		ConfigFile: HAProxyPath + "haproxy.cfg",
-		PidFile:    HAProxyPath + "haproxy.pid",
-		LogSocket:  HAProxyPath + "haproxy.log.sock",
+		Binary:      "haproxy",
+		BasicConfig: *configurationPath + *configurationBasicFile,
+		ConfigFile:  *configurationPath + "haproxy.cfg",
+		PidFile:     *configurationPath + "haproxy.pid",
+		LogSocket:   *configurationPath + "haproxy.log.sock",
+	}
+
+	if _, err := os.Stat(haProxy.ConfigFile); os.IsNotExist(err) {
+		basic, err := ioutil.ReadFile(haProxy.BasicConfig)
+		if err != nil {
+			logger.Panic("Cannot read basic HAProxy configuration: ", haProxy.BasicConfig)
+			return
+		}
+		ioutil.WriteFile(haProxy.ConfigFile, basic, 0644)
 	}
 
 	// Waiter keeps the program from exiting instantly.
@@ -109,17 +130,17 @@ func keyValueWatcher() Watcher {
 	if *storeType == "etcd" {
 		return &Etcd{
 			ConnectionString: *storeConnection,
-			Path: *configurationPath,
+			Path: *storeKey,
 		}
 	} else if *storeType == "consul" {
 		return &Consul{
 			ConnectionString: *storeConnection,
-			Path: *configurationPath,
+			Path: *storeKey,
 		}
 	} else if *storeType == "zookeeper" {
 		return &ZooKeeper{
 			ConnectionString: *storeConnection,
-			Path: *configurationPath,
+			Path: *storeKey,
 		}
 	} else {
 		logger.Panic("Key-value store type not supported: ", *storeType)
