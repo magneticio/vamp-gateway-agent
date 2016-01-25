@@ -76,7 +76,7 @@ output {
 - `go get github.com/tools/godep`
 - `godep restore`
 - `go install`
-- `go build`
+- `CGO_ENABLED=0 go build -v -a -installsuffix cgo`
 
 Alternatively using the `build.sh` script:
 ```

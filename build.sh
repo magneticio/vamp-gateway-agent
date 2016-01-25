@@ -65,7 +65,7 @@ function go_build() {
     go get github.com/tools/godep
     godep restore
     go install
-    go build
+    CGO_ENABLED=0 go build -v -a -installsuffix cgo
 
     mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.cfg ${target_go}/.
     cd ${target} && tar -zcf ${assembly_go} vamp && mv ${assembly_go} ${dir}/${target_go}/. && cd ${dir}
