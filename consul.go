@@ -15,7 +15,7 @@ func (consul *Consul) Watch(onChange func([]byte) error) {
 		conf := api.DefaultConfig()
 		conf.Address = consul.ConnectionString
 		client, err := api.NewClient(conf)
-		opts := &api.QueryOptions{WaitTime: Timeout}
+		opts := &api.QueryOptions{WaitTime: retryTimeout}
 
 		if err != nil {
 			logger.Error("Error connecting to Consul: %s", err.Error())
@@ -35,6 +35,6 @@ func (consul *Consul) Watch(onChange func([]byte) error) {
 			}
 		}
 
-		time.Sleep(Timeout)
+		time.Sleep(retryTimeout)
 	}
 }

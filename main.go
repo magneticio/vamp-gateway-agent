@@ -9,10 +9,6 @@ import (
 	"io/ioutil"
 )
 
-const (
-	Timeout = 5 * time.Second
-)
-
 var (
 	logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the Logstash instance")
 	logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the Logstash instance")
@@ -23,10 +19,13 @@ var (
 	configurationPath = flag.String("configurationPath", "/opt/vamp/", "HAProxy configuration path.")
 	configurationBasicFile = flag.String("configurationBasicFile", "haproxy.basic.cfg", "Basic HAProxy configuration.")
 
+	timeout = flag.Int("retryTimeout", 5, "Default retry timeout in seconds.")
+
 	logo = flag.Bool("logo", true, "Show logo.")
 	help = flag.Bool("help", false, "Print usage.")
 	debug = flag.Bool("debug", false, "Switches on extra log statements.")
 
+	retryTimeout = 5 * time.Second
 	logger = CreateLogger()
 )
 
@@ -75,6 +74,8 @@ func main() {
 		logger.Panic("No basic HAProxy configuration: ", *configurationPath, *configurationBasicFile)
 		return
 	}
+
+	retryTimeout = time.Duration(*timeout) * time.Second
 
 	logger.Notice("Starting Vamp Gateway Agent")
 

@@ -19,26 +19,29 @@ In that case any configuration read from KV store is appended to the content of 
 $ ./vamp-gateway-agent: -h
                                        
 Usage of ./vamp-gateway-agent:
-    -configurationBasicFile string
-          Basic HAProxy configuration. (default "haproxy.basic.cfg")
-    -configurationPath string
-          HAProxy configuration path. (default "/opt/vamp/")
-    -debug
-          Switches on extra log statements.
-    -help
-          Print usage.
-    -logo
-          Show logo. (default true)
-    -logstashHost string
-          Address of the Logstash instance (default "127.0.0.1")
-    -logstashPort int
-          The UDP input port of the Logstash instance (default 10001)
-    -storeConnection string
-          Key-value store connection string.
-    -storeKey string
-          HAProxy configuration store key. (default "/vamp/gateways/haproxy/1.6")
-    -storeType string
-          zookeeper, consul or etcd.
+  -configurationBasicFile string
+        Basic HAProxy configuration. (default "haproxy.basic.cfg")
+  -configurationPath string
+        HAProxy configuration path. (default "/opt/vamp/")
+  -debug
+        Switches on extra log statements.
+  -help
+        Print usage.
+  -logo
+        Show logo. (default true)
+  -logstashHost string
+        Address of the Logstash instance (default "127.0.0.1")
+  -logstashPort int
+        The UDP input port of the Logstash instance (default 10001)
+  -retryTimeout int
+        Default retry timeout in seconds. (default 5)
+  -storeConnection string
+        Key-value store connection string.
+  -storeKey string
+        HAProxy configuration store key. (default "/vamp/gateways/haproxy/1.6")
+  -storeType string
+        zookeeper, consul or etcd.
+
 ```
 
 Logstash example configuration:

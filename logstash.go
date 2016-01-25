@@ -76,7 +76,7 @@ func (logstash *Logstash) sender() {
 
 		RETRY:
 
-		time.Sleep(Timeout)
+		time.Sleep(retryTimeout)
 	}
 }
 

@@ -21,7 +21,7 @@ func (etcd *Etcd) init() {
 		Endpoints:               servers,
 		Transport:               client.DefaultTransport,
 		// set timeout per request to fail fast when the target endpoint is unavailable
-		HeaderTimeoutPerRequest: Timeout,
+		HeaderTimeoutPerRequest: retryTimeout,
 	}
 	c, err := client.New(cfg)
 	if err != nil {
@@ -52,6 +52,6 @@ func (etcd *Etcd) Watch(onChange func([]byte) error) {
 			}
 			onChange([]byte(result.Node.Value))
 		}
-		time.Sleep(Timeout)
+		time.Sleep(retryTimeout)
 	}
 }
