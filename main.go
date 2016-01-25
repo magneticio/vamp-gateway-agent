@@ -22,7 +22,6 @@ var (
 	configurationPath = flag.String("configurationPath", "/vamp/gateways/haproxy/1.6", "HAProxy configuration path.")
 
 	logo = flag.Bool("logo", true, "Show logo.")
-
 	debug = flag.Bool("debug", false, "Switches on extra log statements.")
 
 	logger = CreateLogger()
@@ -47,6 +46,8 @@ type Watcher interface {
 }
 
 func main() {
+
+	flag.Bool("help", false, "Print usage.")
 
 	flag.Parse()
 
