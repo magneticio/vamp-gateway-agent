@@ -1,6 +1,7 @@
 FROM alpine:3.3
 
-RUN apk --update add musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
+RUN set -ex && \
+    apk --update add musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
     mkdir /usr/src && \
     curl -fL http://www.haproxy.org/download/1.6/src/haproxy-1.6.3.tar.gz | tar xzf - -C /usr/src && \
     cd /usr/src/haproxy-1.6.3 && \
