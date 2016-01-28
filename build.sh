@@ -8,8 +8,8 @@ yellow=`tput setaf 3`
 
 version="0.8.2"
 target='target'
+target_vamp=${target}'/vamp'
 target_docker=${target}'/docker'
-target_go=${target}'/vamp'
 assembly_go='vamp.tar.gz'
 
 cd ${dir}
@@ -56,19 +56,19 @@ function build_help() {
 }
 
 function go_build() {
+    cd ${dir}
     bin='vamp-gateway-agent'
     export GOOS='linux'
     export GOARCH='amd64'
     echo "${green}building ${GOOS}:${GOARCH} ${yellow}${bin}${reset}"
-    rm -rf ${target_go} && mkdir -p ${target_go}
+    rm -rf ${target_vamp} && mkdir -p ${target_vamp}
 
     go get github.com/tools/godep
     godep restore
     go install
     CGO_ENABLED=0 go build -v -a -installsuffix cgo
 
-    mv ${bin} ${target_go} && chmod +x ${target_go}/${bin} && cp ${dir}/haproxy.basic.cfg ${target_go}/.
-    cd ${target} && tar -zcf ${assembly_go} vamp && mv ${assembly_go} ${dir}/${target_go}/. && cd ${dir}
+    mv ${bin} ${target_vamp} && chmod +x ${target_vamp}/${bin}
 }
 
 function docker_rmi {
@@ -103,13 +103,14 @@ function docker_images {
 }
 
 function process() {
-    rm -Rf ${dir}/${target_docker} 2> /dev/null && mkdir -p ${target_docker}
-    cp -R ${dir}/docker/* ${dir}/${target_docker}
+    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_docker} && cd ${dir}/docker
+    find . -name 'Dockerfile' | cpio -pdm ${dir}/${target_docker}
 
     if [ ${flag_make} -eq 1 ]; then
         go_build
     fi
 
+    cd ${dir}
     regex="^${target_docker}\/(.+)\/(.+)\/(.+)\/Dockerfile$"
     images=()
 
@@ -119,20 +120,24 @@ function process() {
         haproxy_version="${BASH_REMATCH[1]}"
         linux="${BASH_REMATCH[2]}"
         linux_version="${BASH_REMATCH[3]}"
-        target=${dir}/${target_docker}/${haproxy_version}/${linux}/${linux_version}
+        docker_path=${dir}/${target_docker}/${haproxy_version}/${linux}/${linux_version}
         image=${haproxy_version}-${linux}-${linux_version}
         images+=(${image})
         image_name=magneticio/vamp-gateway-agent_${image}:${version}
 
         if [ ${flag_make} -eq 1 ]; then
-            cp -R ${dir}/${target_go}/${assembly_go} ${target} 2> /dev/null
-            docker_make ${target}
+          docker_make ${docker_path}
+          cp -f ${dir}/docker/${haproxy_version}/haproxy.basic.cfg ${dir}/${target_vamp}
+          cd ${dir}/${target} && tar -zcf ${assembly_go} vamp
+          mv ${dir}/${target}/${assembly_go} ${docker_path} 2> /dev/null
         fi
+
         if [ ${flag_clean} -eq 1 ]; then
             docker_rmi ${image_name}
         fi
+
         if [ ${flag_build} -eq 1 ]; then
-            docker_build ${image_name} ${target}
+            docker_build ${image_name} ${docker_path}
         fi
     done
 
