@@ -52,7 +52,7 @@ func main() {
 	flag.Parse()
 
 	if *logo {
-		logger.Notice(Logo("0.8.2"))
+		logger.Notice(Logo("0.8.3"))
 	}
 
 	if *help {
