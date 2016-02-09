@@ -59,13 +59,13 @@ func (haProxy *HAProxy) Run() error {
 
 	logger.Info("HAProxy configuration file: %s", haProxy.ConfigFile)
 
-	// Setup all command line parameters so we get an executable like: haproxy -f haproxy.cfg -p haproxy.pid -sf 1234
+	// Setup all command line parameters so we get an executable like: haproxy -f haproxy.cfg -p haproxy.pid -st 1234
 	arg0 := "-f"
 	arg1 := haProxy.ConfigFile
 	arg2 := "-p"
 	arg3 := haProxy.PidFile
 	arg4 := "-D"
-	arg5 := "-sf"
+	arg5 := "-st"
 	arg6 := strings.Trim(string(pid), "\n")
 	var cmd *exec.Cmd
 
