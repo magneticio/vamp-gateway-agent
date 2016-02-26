@@ -137,6 +137,7 @@ After that Docker Hub Automated Build is triggered.
 **Alpine**
 
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.3) 1.6.3-alpine-3.3-0.8.3
+
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.3) 1.5.15-alpine-3.3-0.8.3
 
 e.g.
@@ -148,6 +149,7 @@ docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-alpin
 **CentOS**
 
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.3) 1.6.3-centos-7-0.8.3
+
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.3) 1.5.15-centos-7-0.8.3
 
 e.g.
@@ -159,6 +161,7 @@ docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-cento
 **Ubuntu**
 
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.3) 1.6.3-ubuntu-14.04-0.8.3
+
 [![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.3) 1.5.15-ubuntu-14.04-0.8.3
 
 e.g.
