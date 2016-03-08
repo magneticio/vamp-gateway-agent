@@ -118,16 +118,16 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.6.3-alpine-3.3:0.8.3
-- magneticio/vamp-gateway-agent_1.5.15-alpine-3.3:0.8.3
-- magneticio/vamp-gateway-agent_1.6.3-ubuntu-14.04:0.8.3
-- magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.3
-- magneticio/vamp-gateway-agent_1.6.3-centos-7:0.8.3
-- magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.3
+- magneticio/vamp-gateway-agent_1.6.3-alpine-3.3:0.8.4
+- magneticio/vamp-gateway-agent_1.5.15-alpine-3.3:0.8.4
+- magneticio/vamp-gateway-agent_1.6.3-ubuntu-14.04:0.8.4
+- magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.4
+- magneticio/vamp-gateway-agent_1.6.3-centos-7:0.8.4
+- magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.4
 
 ## Travis CI Build
 
-Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to specific version branch (e.g. 0.8.3).
+Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to specific version branch (e.g. 0.8.4).
 After that Docker Hub Automated Build is triggered.
 
 ## Docker Images
@@ -136,36 +136,36 @@ After that Docker Hub Automated Build is triggered.
 
 **Alpine**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.3) 1.6.3-alpine-3.3-0.8.3
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.4) 1.6.3-alpine-3.3-0.8.4
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.3) 1.5.15-alpine-3.3-0.8.3
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.4) 1.5.15-alpine-3.3-0.8.4
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.3
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.4
 ```
 
 **CentOS**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.3) 1.6.3-centos-7-0.8.3
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.4) 1.6.3-centos-7-0.8.4
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.3) 1.5.15-centos-7-0.8.3
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.4) 1.5.15-centos-7-0.8.4
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.3
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.4
 ```
 
 **Ubuntu**
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.3) 1.6.3-ubuntu-14.04-0.8.3
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.4) 1.6.3-ubuntu-14.04-0.8.4
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.3.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.3) 1.5.15-ubuntu-14.04-0.8.3
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.4) 1.5.15-ubuntu-14.04-0.8.4
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.3
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.4
 ```

@@ -6,7 +6,7 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-version="0.8.3"
+version="0.8.4"
 target='target'
 target_vamp=${target}'/vamp'
 target_docker=${target}'/docker'
