@@ -98,10 +98,7 @@ Deliverable is in `target/go` directory.
  
 ## Building Docker Images
 
-Directory `docker` contains `Dockerfile`s for the following:
-
-- HAProxy 1.5.15 and 1.6.3
-- Ubuntu 14.04, CentOS 7 and Alpine 3.3
+Directory `haproxy` contains `Dockerfile`s for HAProxy 1.5.15 and 1.6.3 **Alpine** based images.
 
 ```
 $ ./build.sh -h
@@ -118,12 +115,8 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.6.3-alpine-3.3:0.8.4
-- magneticio/vamp-gateway-agent_1.5.15-alpine-3.3:0.8.4
-- magneticio/vamp-gateway-agent_1.6.3-ubuntu-14.04:0.8.4
-- magneticio/vamp-gateway-agent_1.5.15-ubuntu-14.04:0.8.4
-- magneticio/vamp-gateway-agent_1.6.3-centos-7:0.8.4
-- magneticio/vamp-gateway-agent_1.5.15-centos-7:0.8.4
+- magneticio/vamp-gateway-agent_1.6.3:0.8.4
+- magneticio/vamp-gateway-agent_1.5.15:0.8.4
 
 ## Travis CI Build
 
@@ -134,38 +127,12 @@ After that Docker Hub Automated Build is triggered.
 
 [Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
 
-**Alpine**
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-0.8.4) 1.6.3-0.8.4
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.4) 1.6.3-alpine-3.3-0.8.4
-
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-alpine-3.3-0.8.4) 1.5.15-alpine-3.3-0.8.4
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-0.8.4) 1.5.15-0.8.4
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-alpine-3.3-0.8.4
-```
-
-**CentOS**
-
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.4) 1.6.3-centos-7-0.8.4
-
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-centos-7-0.8.4) 1.5.15-centos-7-0.8.4
-
-e.g.
-
-```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-centos-7-0.8.4
-```
-
-**Ubuntu**
-
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.4) 1.6.3-ubuntu-14.04-0.8.4
-
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-ubuntu-14.04-0.8.4) 1.5.15-ubuntu-14.04-0.8.4
-
-e.g.
-
-```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-ubuntu-14.04-0.8.4
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-0.8.4
 ```

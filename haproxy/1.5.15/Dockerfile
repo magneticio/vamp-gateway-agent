@@ -1,5 +1,7 @@
 FROM alpine:3.2
 
+ENV VAMP_GATEWAY_VERSION=0.8.4
+
 RUN set -ex && \
     apk --update add musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
     mkdir /usr/src && \
@@ -12,3 +14,9 @@ RUN set -ex && \
     apk del musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
     apk add musl pcre zlib && \
     rm /var/cache/apk/*
+
+EXPOSE 1988
+
+ADD https://bintray.com/artifact/download/magnetic-io/downloads/vamp-gateway-agent/vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz /opt
+
+ENTRYPOINT ["/opt/vamp/vamp-gateway-agent"]

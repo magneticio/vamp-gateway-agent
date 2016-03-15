@@ -9,7 +9,7 @@ yellow=`tput setaf 3`
 version="0.8.4"
 target='target'
 target_vamp=${target}'/vamp'
-target_docker=${target}'/docker'
+target_haproxy=${target}'/haproxy'
 assembly_go='vamp.tar.gz'
 
 cd ${dir}
@@ -66,7 +66,7 @@ function go_build() {
     go get github.com/tools/godep
     godep restore
     go install
-    CGO_ENABLED=0 go build -v -a -installsuffix cgo
+    CGO_ENABLED=0 go build -a -installsuffix cgo
 
     mv ${bin} ${target_vamp} && chmod +x ${target_vamp}/${bin}
 }
@@ -77,14 +77,16 @@ function docker_rmi {
 }
 
 function docker_make {
-    append_to=$1/Dockerfile
+
+    append_to=$2/Dockerfile
+    mkdir -p "$(dirname "${append_to}")" && touch "${append_to}"
+    cat $1 | grep -v ADD | grep -v ENTRYPOINT > ${append_to}
     echo "${green}appending common code to: ${append_to} ${reset}"
     function append() {
         printf "\n$1\n" >> ${append_to}
     }
 
     append "ADD ${assembly_go} /opt"
-    append "EXPOSE 1988"
     append "ENTRYPOINT [\"/opt/vamp/vamp-gateway-agent\"]"
 }
 
@@ -103,31 +105,28 @@ function docker_images {
 }
 
 function process() {
-    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_docker} && cd ${dir}/docker
-    find . -name 'Dockerfile' | cpio -pdm ${dir}/${target_docker}
+    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_haproxy} && cd ${dir}/haproxy
 
     if [ ${flag_make} -eq 1 ]; then
         go_build
     fi
 
     cd ${dir}
-    regex="^${target_docker}\/(.+)\/(.+)\/(.+)\/Dockerfile$"
+    regex="^${dir}\/haproxy\/(.+)\/Dockerfile$"
     images=()
 
-    for file in `find ${target_docker} | grep Dockerfile`
+    for file in `find ${dir}/haproxy | grep Dockerfile`
     do
       [[ ${file} =~ $regex ]]
         haproxy_version="${BASH_REMATCH[1]}"
-        linux="${BASH_REMATCH[2]}"
-        linux_version="${BASH_REMATCH[3]}"
-        docker_path=${dir}/${target_docker}/${haproxy_version}/${linux}/${linux_version}
-        image=${haproxy_version}-${linux}-${linux_version}
+        docker_path=${dir}/${target_haproxy}/${haproxy_version}
+        image=${haproxy_version}
         images+=(${image})
         image_name=magneticio/vamp-gateway-agent_${image}:${version}
 
         if [ ${flag_make} -eq 1 ]; then
-          docker_make ${docker_path}
-          cp -f ${dir}/docker/${haproxy_version}/haproxy.basic.cfg ${dir}/${target_vamp}
+          docker_make ${file} ${docker_path}
+          cp -f ${dir}/haproxy/${haproxy_version}/haproxy.basic.cfg ${dir}/${target_vamp}
           cd ${dir}/${target} && tar -zcf ${assembly_go} vamp
           mv ${dir}/${target}/${assembly_go} ${docker_path} 2> /dev/null
         fi
