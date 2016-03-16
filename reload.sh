@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 configuration=$1
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-pid_file=${dir}/haproxy.pid
+pid_file=/tmp/haproxy.pid
 
 if [ ! -e ${pid_file} ] ; then
     touch ${pid_file}

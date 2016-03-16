@@ -1,4 +1,4 @@
-FROM alpine:3.2
+FROM alpine:3.3
 
 ENV VAMP_GATEWAY_VERSION=0.8.4
 
