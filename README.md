@@ -100,7 +100,7 @@ Deliverable is in `target/go` directory.
  
 ## Building Docker Images
 
-Directory `haproxy` contains `Dockerfile`s for HAProxy 1.5.15 and 1.6.3 **Alpine** based images.
+Directory `haproxy` contains `Dockerfile`s for HAProxy 1.5.16 and 1.6.4 **Alpine** based images.
 
 ```
 $ ./build.sh -h
@@ -117,8 +117,8 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.6.3:0.8.4
-- magneticio/vamp-gateway-agent_1.5.15:0.8.4
+- magneticio/vamp-gateway-agent_1.6.4:0.8.4
+- magneticio/vamp-gateway-agent_1.5.16:0.8.4
 
 ## Travis CI Build
 
@@ -129,12 +129,12 @@ After that Docker Hub Automated Build is triggered.
 
 [Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.3-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.3-0.8.4) 1.6.3-0.8.4
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.4-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.4-0.8.4) 1.6.4-0.8.4
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.15-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.15-0.8.4) 1.5.15-0.8.4
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.16-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.16-0.8.4) 1.5.16-0.8.4
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.3-0.8.4
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.4-0.8.4
 ```
