@@ -35,6 +35,8 @@ Usage of ./vamp-gateway-agent:
         The UDP input port of the Logstash instance (default 10001)
   -retryTimeout int
         Default retry timeout in seconds. (default 5)
+  -scriptPath
+        HAProxy validation and reload script path. (default "/opt/vamp/")
   -storeConnection string
         Key-value store connection string.
   -storeKey string

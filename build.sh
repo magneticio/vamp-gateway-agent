@@ -126,6 +126,8 @@ function process() {
 
         if [ ${flag_make} -eq 1 ]; then
           docker_make ${file} ${docker_path}
+          cp -f ${dir}/reload.sh ${dir}/${target_vamp}
+          cp -f ${dir}/validate.sh ${dir}/${target_vamp}
           cp -f ${dir}/haproxy/${haproxy_version}/haproxy.basic.cfg ${dir}/${target_vamp}
           cd ${dir}/${target} && tar -zcf ${assembly_go} vamp
           mv ${dir}/${target}/${assembly_go} ${docker_path} 2> /dev/null
