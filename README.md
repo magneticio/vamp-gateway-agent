@@ -117,24 +117,24 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.6.4:0.8.4
-- magneticio/vamp-gateway-agent_1.5.16:0.8.4
+- magneticio/vamp-gateway-agent_1.6.4:0.8.5
+- magneticio/vamp-gateway-agent_1.5.16:0.8.5
 
 ## Travis CI Build
 
-Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to specific version branch (e.g. 0.8.4).
+Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to specific version branch (e.g. 0.8.5).
 After that Docker Hub Automated Build is triggered.
 
 ## Docker Images
 
 [Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.4-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.4-0.8.4) 1.6.4-0.8.4
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.4-0.8.5.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.4-0.8.5) 1.6.4-0.8.5
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.16-0.8.4.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.16-0.8.4) 1.5.16-0.8.4
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.16-0.8.5.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.16-0.8.5) 1.5.16-0.8.5
 
 e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.4-0.8.4
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.4-0.8.5
 ```
