@@ -39,18 +39,14 @@ func (haProxy *HAProxy) Run() error {
     script := haProxy.ScriptPath + "reload.sh"
     logger.Notice("Reloading HAProxy - configuration file: %s, reload script: %s", haProxy.ConfigFile, script)
 
-    cmd := exec.Command("/bin/bash", script, haProxy.ConfigFile)
+    cmd := exec.Command("/bin/sh", script, haProxy.ConfigFile)
 
-    var stdout, stderr bytes.Buffer
-    cmd.Stdout = &stdout
-    cmd.Stderr = &stderr
+    var out bytes.Buffer
+    cmd.Stdout = &out
 
     err := cmd.Run()
-
-    logger.Info("Execution reload haproxy standard output: %s", string(stdout.Bytes()[:]))
-
     if err != nil {
-        logger.Error("Error while reloading haproxy: %s, %s", err.Error(), string(stderr.Bytes()[:]))
+        logger.Error("Error while reloading haproxy: %s", err.Error())
     }
 
     return err
