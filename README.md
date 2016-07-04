@@ -100,8 +100,6 @@ Alternatively:
  
 ## Building Docker Images
 
-Directory `haproxy` contains `Dockerfile`s for HAProxy 1.5.16 and 1.6.4 **Alpine** based images.
-
 ```
 $ ./build.sh -h
 
