@@ -116,15 +116,15 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent:0.8.5
+- magneticio/vamp-gateway-agent:0.9.0
 
 ## Docker Image
 
 [Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:0.8.5.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:0.8.5)
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:0.9.0.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:0.9.0)
 
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:0.8.5
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:0.9.0
 ```

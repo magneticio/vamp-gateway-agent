@@ -1,6 +1,6 @@
 FROM alpine:3.4
 
-ENV VAMP_GATEWAY_VERSION=0.8.5
+ENV VAMP_GATEWAY_VERSION=0.9.0
 
 RUN set -ex && \
     apk --update add musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
