@@ -29,10 +29,8 @@ Usage of ./vamp-gateway-agent:
         Print usage.
   -logo
         Show logo. (default true)
-  -logstashHost string
-        Address of the Logstash instance (default "127.0.0.1")
-  -logstashPort int
-        The UDP input port of the Logstash instance (default 10001)
+  -logstash string
+          Logstash 'host:port' (UDP), if set to '' then sending logs is disabled. (default "127.0.0.1:10001")
   -retryTimeout int
         Default retry timeout in seconds. (default 5)
   -scriptPath
@@ -116,29 +114,19 @@ Usage of ./build.sh:
   -b|--build  Build Docker image.
   -a|--all    Build all binaries, by default only linux:amd64.
 
-
 ```
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent_1.6.4:0.8.5
-- magneticio/vamp-gateway-agent_1.5.16:0.8.5
+- magneticio/vamp-gateway-agent:0.8.5
 
-## Travis CI Build
-
-Build is performed on each push to `master` branch and all directories from `target/docker` are pushed to specific version branch (e.g. 0.8.5).
-After that Docker Hub Automated Build is triggered.
-
-## Docker Images
+## Docker Image
 
 [Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.6.4-0.8.5.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.6.4-0.8.5) 1.6.4-0.8.5
+[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:0.8.5.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:0.8.5)
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:1.5.16-0.8.5.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:1.5.16-0.8.5) 1.5.16-0.8.5
-
-e.g.
 
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:1.6.4-0.8.5
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:0.8.5
 ```
