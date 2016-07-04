@@ -12,8 +12,7 @@ import (
 var (
     version string
 
-    logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the Logstash instance")
-    logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the Logstash instance")
+    logstash = flag.String("logstash", "127.0.0.1:10001", "Logstash 'host:port' (UDP), if set to '' then sending logs is disabled.")
 
     storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
     storeConnection = flag.String("storeConnection", "", "Key-value store connection string.")

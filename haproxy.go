@@ -4,7 +4,6 @@ import (
     "fmt"
     "net"
     "bytes"
-    "strconv"
     "os/exec"
     "io/ioutil"
 )
@@ -29,9 +28,10 @@ func (haProxy *HAProxy) Init() {
     logger.Info(fmt.Sprintf("Opened Unix socket at: %s. Creating Logstash sender.", haProxy.LogSocket))
 
     logstash := Logstash{
-        Address: *logstashHost + ":" + strconv.Itoa(*logstashPort),
+        Address: *logstash,
         Reader: conn,
     }
+
     logstash.Pipe()
 }
 
