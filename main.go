@@ -10,6 +10,8 @@ import (
 )
 
 var (
+    version string
+
     logstashHost = flag.String("logstashHost", "127.0.0.1", "Address of the Logstash instance")
     logstashPort = flag.Int("logstashPort", 10001, "The UDP input port of the Logstash instance")
 
@@ -32,7 +34,7 @@ var (
     logger = CreateLogger()
 )
 
-func Logo(version string) string {
+func Logo() string {
     return `
 ██╗   ██╗ █████╗ ███╗   ███╗██████╗
 ██║   ██║██╔══██╗████╗ ████║██╔══██╗
@@ -55,7 +57,7 @@ func main() {
     flag.Parse()
 
     if *logo {
-        logger.Notice(Logo("0.8.5"))
+        logger.Notice(Logo())
     }
 
     if *help {

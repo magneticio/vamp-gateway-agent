@@ -1,42 +1,12 @@
 language: go
 sudo: false
-go:
-- 1.6.2
-
+go: 1.6.2
 script: bash build.sh --make
-
 after_success: |
-  if [ -n "$GITHUB_API_KEY" ] && [ ${TRAVIS_PULL_REQUEST} == "false" ] && [ $TRAVIS_BRANCH == "master" ] && [ ! -n "$TRAVIS_TAG" ]; then
-
-    VERSION=0.8.5
-
-    TMP_DIR=/tmp/vamp
-    GIT_COMMIT=`git rev-parse --short HEAD`
-
-    git clone -b ${VERSION} https://github.com/magneticio/vamp-gateway-agent.git $TMP_DIR > /dev/null 2>&1
-
-    if [ ! -d "$TMP_DIR" ]; then
-      mkdir -p $TMP_DIR
-    fi
-
-    rm -fR $TMP_DIR/* > /dev/null 2>&1
-    mv -f target/docker/* $TMP_DIR/.
-    cp LICENSE $TMP_DIR/.
-    cp README.md $TMP_DIR/.
-    cd $TMP_DIR
-
-    if [ ! -d ".git" ]; then
-      git init
-      git checkout -b ${VERSION}
-    fi
-
-    git add . > /dev/null 2>&1
-    git -c user.name='travis' -c user.email='travis' commit -m "build $GIT_COMMIT"
-    git push -f -q https://$GITHUB_API_KEY@github.com/magneticio/vamp-gateway-agent.git ${VERSION} > /dev/null 2>&1
-
-    cd $TRAVIS_BUILD_DIR
+  if [ -n "TRAVIS_TAG" ] && [ "$(git describe --tags)" = "$(git describe --abbrev=0)" ]; then
+    bash $TRAVIS_BUILD_DIR/.travis-bintray.sh
   fi
-
 env:
-  matrix:
-    secure: GMLLA4QspoFvkjGwVg0VTHuqnSJRqI3RMTkDtLLvdZxGgmoytidnUbewjmuV5v9rfGWtjg3ZKXN1aY5QUNHXNTeOixJ/6VeD4c8vIyenlmFMwvIHYZ+WD6q+cscJp59ocjrJgS/qqcpj2MvY0GzOOn1FKkV5g9+WZEtEPe4+1TudHpODY36R64Hst2hd+N+OXiWSUeSDF+Rfbqf6ZuKVuny6FJF8PwD5Zj3+K9gFREC0jgZJwGM+74v++OXGGIthrPZzJ3aeW2vWKl2+ASgfxGV1Iw3KeRCFPCBH6rJbVnJ0k7y2YyBZeiDeftCxwke65leinTpkxorxqjWKgk5HjO4cKbljLne8CkI3TGaQHrvz1uk7yOwxM0E1wbvDj4+RbvgsvoEWNZL7hHDY2xL3GvHZOXKUPuW5tmZcsr/EUzw2B4V5j3Sv/rYncak76u8uufBumP+TJ5mPDGekzUt4CRIXVe+DlsIpVLKtfl0NwYNpVxMpYJWoBPYeSzR4C3Bv74gE2nCHk4Hsh9a71uEDtW/3ykhuvS7MymD4eIzI8usN5+rfcigM/sMVYpMrFerOvCKUQe1R7V5PeUzLRZ4XZ/ohMT06ypd/CcR6rM1buHp5oKcrCdGXJYVnUtwFDpXwFiXmAnPwrjjU16RLWMEsOSUUIXs/LQlHDNBp46vYiiA=
+  global:
+  - secure: uEVeGzy1byUon690VlQQFxv8gV+LP4fwdH4Wvflqdirq5orcYXtS4Mvl0R2vG8lqRU48f8aAlBMKGJwg53QEiT3HKz9miYak/IcaihS0lfNWDRR/EjS0kGqBvcQ+7tFgfa6YFLP+aMkcwX2ZfLyMQzkI0Ur1byKcyK2OqdvmCKSR/QSOBtAXoVflq8Oy8IQwXUn+FC7Ysah7zoJgQq5z7b0O0n/KXL/W5FcPsedDVgkB5He8KvR7tX15LJQwyb6m3CGKkoM93lalfo3mxf7PJN/Clnub6hSjIHWsNDkUUb7hw1UOud7TJmttOKQYD4hErhGOIKNHqIO6fIFr2TtfZo4CrWokp9ZQhInFDIF0hVs/MAtmbetqFED6H8NfQX/3rXpjfZ2U/EbrKmopQFx05SZb3nrQajwpLUMNEFbKEyvOibvIpN8/rynaX2YqIcr/Wz1fe6jvdK0SQ9c/QlxrSF14oUGX+dxm413Fn1BU/lrVfA1MESOf+9ZzV3r9DCBV5JKt/PgZzefaJV/AhD3ViSKaT34TzSaz4OQyR/kBilhjgADxnjVKfVHR80appzBeq9sfmqEN+pof/fs0+cKRr54Qet7FYxt47vff6w6YlH0IbyT3NModuHf1/Bj9EGmdzA7fQXL2zN/rRUOYK2bPa+4NRyhbdRFkP+i40WkUcGE=
+  - secure: rmrPFsAIt3gi/QvFd4s3J/oRT7wTKTO9bA0Ajx4Su3GmiFQl7l5zvmX5qjkQoNBer4JqzDZ+2wWklTdoDl9/6ea9DoM4sHXyD70Tv+3iJO+z50ntaK4S6paDT4wdDamEbzwGmKWbGRV0j4LuhWn31Ox2j/M/lmIhtoJK7CNTWRlKYTUip50S5vy0oF16iRSP4bxvvVl+gyS6cJhEg8Tq0H2C4y9CLgneBgi7mxoXw1KDBHu+SRqOtQe8JhDlhO+wMzs+Gq0qKa5R/hIIyL6kXj82eBZaMCzEj+ihxj7xTHXok4bCrfkYcWSJj7Npb3q1/bEjf1pl5d+74ifGX4toJkS9wksP97l2y6i+EI8iIWynmCUnw9p4Wwsk6fbHjTt8gDjAqeAixCmHepji7OUi6ENJzf79F0gVm/Kw6htMn81/cvp48U2XxixLz8cI4Uy3ijahTA0w6VE/WLcZKlYpJQKzJXb2MxZxZHrKbepS129dq0HcvmFAyYtW5uuMps7zl+lMU3sPSqUICSsbo6hhXsws89slUlP4PG4cI5P1usrxSk+pd7uDBnktSRuJFh/3IKqLB3baTkFqkzsEVEe98e/H6w0xVOyOcJIimTyAG43bFYctsnnw0eejFHT5tUm9H9eJXxhi8ansTXOQ8zzvcmptiDs+fEShvrXEA0sb+hA=

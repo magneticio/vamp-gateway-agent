@@ -6,7 +6,7 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-version="0.8.5"
+version="$( git describe --tags )"
 target='target'
 target_vamp=${target}'/vamp'
 target_haproxy=${target}'/haproxy'
@@ -66,7 +66,7 @@ function go_build() {
     go get github.com/tools/godep
     godep restore
     go install
-    CGO_ENABLED=0 go build -a -installsuffix cgo
+    CGO_ENABLED=0 go build -ldflags "-X main.version=${version}" -a -installsuffix cgo
 
     mv ${bin} ${target_vamp} && chmod +x ${target_vamp}/${bin}
 }
