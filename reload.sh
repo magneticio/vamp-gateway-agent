@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 configuration=$1
-pid_file=/tmp/haproxy.pid
+pid_file=/opt/vamp/haproxy.pid
 
 if [ ! -e ${pid_file} ] ; then
     touch ${pid_file}
