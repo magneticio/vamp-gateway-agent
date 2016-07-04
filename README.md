@@ -87,16 +87,18 @@ output {
 
 ## Building Binary
 
+Using the `build.sh` script:
+```
+  ./build.sh --make
+```
+
+Alternatively:
+
 - `go get github.com/tools/godep`
 - `godep restore`
 - `go install`
 - `CGO_ENABLED=0 go build -v -a -installsuffix cgo`
 
-Alternatively using the `build.sh` script:
-```
-  ./build.sh --make
-```
-Deliverable is in `target/go` directory.
  
 ## Building Docker Images
 
@@ -108,10 +110,12 @@ $ ./build.sh -h
 Usage of ./build.sh:
 
   -h|--help   Help.
-  -l|--list   List all available images.
-  -c|--clean  Remove all available images.
-  -m|--make   Build vamp-gateway-agent binary and copy it to Docker directories.
-  -b|--build  Build all available images.
+  -l|--list   List built Docker images.
+  -r|--remove Remove Docker image.
+  -m|--make   Build the binary and copy it to the Docker directories.
+  -b|--build  Build Docker image.
+  -a|--all    Build all binaries, by default only linux:amd64.
+
 
 ```
 
