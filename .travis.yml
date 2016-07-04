@@ -1,7 +1,7 @@
 language: go
 sudo: false
 go: 1.6.2
-script: bash build.sh --make
+script: bash build.sh --make --all
 after_success: |
   if [ -n "TRAVIS_TAG" ] && [ "$(git describe --tags)" = "$(git describe --abbrev=0)" ]; then
     bash $TRAVIS_BUILD_DIR/.travis-bintray.sh

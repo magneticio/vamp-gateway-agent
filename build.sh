@@ -9,8 +9,9 @@ yellow=`tput setaf 3`
 version="$( git describe --tags )"
 target='target'
 target_vamp=${target}'/vamp'
-target_haproxy=${target}'/haproxy'
-assembly_go='vamp.tar.gz'
+target_docker=${target}'/docker'
+project="vamp-gateway-agent"
+docker_image_name="magneticio/${project}:${version}"
 
 cd ${dir}
 
@@ -20,6 +21,7 @@ function parse_command_line() {
     flag_clean=0
     flag_make=0
     flag_build=0
+    flag_build_all=0
 
     for key in "$@"
     do
@@ -30,7 +32,7 @@ function parse_command_line() {
         -l|--list)
         flag_list=1
         ;;
-        -c|--clean)
+        -r|--remove)
         flag_clean=1
         ;;
         -m|--make)
@@ -39,6 +41,9 @@ function parse_command_line() {
         -b|--build)
         flag_make=1
         flag_build=1
+        ;;
+        -a|--all)
+        flag_build_all=1
         ;;
         *)
         ;;
@@ -49,45 +54,68 @@ function parse_command_line() {
 function build_help() {
     echo "${green}Usage of $0:${reset}"
     echo "${yellow}  -h|--help   ${green}Help.${reset}"
-    echo "${yellow}  -l|--list   ${green}List all available images.${reset}"
-    echo "${yellow}  -c|--clean  ${green}Remove all available images.${reset}"
-    echo "${yellow}  -m|--make   ${green}Build vamp-gateway-agent binary and copy it to Docker directories.${reset}"
-    echo "${yellow}  -b|--build  ${green}Build all available images.${reset}"
+    echo "${yellow}  -l|--list   ${green}List built Docker images.${reset}"
+    echo "${yellow}  -r|--remove ${green}Remove Docker image.${reset}"
+    echo "${yellow}  -m|--make   ${green}Build the binary and copy it to the Docker directories.${reset}"
+    echo "${yellow}  -b|--build  ${green}Build Docker image.${reset}"
+    echo "${yellow}  -a|--all    ${green}Build all binaries, by default only linux:amd64.${reset}"
 }
 
-function go_build() {
+function go_make() {
     cd ${dir}
-    bin='vamp-gateway-agent'
-    export GOOS='linux'
-    export GOARCH='amd64'
-    echo "${green}building ${GOOS}:${GOARCH} ${yellow}${bin}${reset}"
-    rm -rf ${target_vamp} && mkdir -p ${target_vamp}
+    rm -Rf ${dir}/${target_vamp}
 
+    echo "${green}executing ${yellow}godep restore${reset}"
     go get github.com/tools/godep
     godep restore
     go install
-    CGO_ENABLED=0 go build -ldflags "-X main.version=${version}" -a -installsuffix cgo
 
-    mv ${bin} ${target_vamp} && chmod +x ${target_vamp}/${bin}
-}
+    for goos in darwin linux windows; do
+      for goarch in 386 amd64; do
 
-function docker_rmi {
-    echo "${green}removing docker image: $1 ${reset}"
-    docker rmi -f $1 2> /dev/null
+        if [ ${flag_build_all} -eq 1 ] || [[ ${goos} == "linux" && ${goarch} == "amd64" ]]; then
+
+          cd ${dir}
+          mkdir ${dir}/${target_vamp}
+
+          export GOOS=${goos}
+          export GOARCH=${goarch}
+
+          echo "${green}building ${yellow}${project}_${version}_${goos}_${goarch}${reset}"
+
+          CGO_ENABLED=0 go build -ldflags "-X main.version=${version}" -a -installsuffix cgo
+
+          if [ "${goos}" == "windows" ]; then
+              mv ${dir}/${project}.exe ${target_vamp}
+          else
+              mv ${dir}/${project} ${target_vamp} && chmod +x ${target_vamp}/${project}
+          fi
+
+          assembly_go="${project}_${version}_${goos}_${goarch}.tar.gz"
+
+          cp -f ${dir}/reload.sh ${dir}/validate.sh ${dir}/haproxy.basic.cfg ${dir}/${target_vamp}
+          cd ${dir}/${target} && tar -zcf ${assembly_go} vamp
+          mv ${dir}/${target}/${assembly_go} ${dir}/${target_docker} 2> /dev/null
+
+          rm -Rf ${dir}/${target_vamp} 2> /dev/null
+
+        fi
+      done
+    done
 }
 
 function docker_make {
 
-    append_to=$2/Dockerfile
-    mkdir -p "$(dirname "${append_to}")" && touch "${append_to}"
-    cat $1 | grep -v ADD | grep -v ENTRYPOINT > ${append_to}
+    append_to=${dir}/${target_docker}/Dockerfile
+    cat ${dir}/Dockerfile | grep -v ADD | grep -v ENTRYPOINT > ${append_to}
+
     echo "${green}appending common code to: ${append_to} ${reset}"
     function append() {
         printf "\n$1\n" >> ${append_to}
     }
 
-    append "ADD ${assembly_go} /opt"
-    append "ENTRYPOINT [\"/opt/vamp/vamp-gateway-agent\"]"
+    append "ADD ${project}_${version}_linux_amd64.tar.gz /usr/local"
+    append "ENTRYPOINT [\"/usr/local/vamp/${project}\"]"
 }
 
 function docker_build {
@@ -95,55 +123,36 @@ function docker_build {
     docker build -t $1 $2
 }
 
-function docker_images {
-    arr=$1[@]
-    images=("${!arr}")
-    pattern=$(printf "\|%s" "${images[@]}")
-    pattern=${pattern:2}
+function docker_rmi {
+    echo "${green}removing docker image: $1 ${reset}"
+    docker rmi -f $1 2> /dev/null
+}
+
+function docker_image {
     echo "${green}built images:${yellow}"
-    docker images | grep 'magneticio/vamp-gateway-agent' | grep ${pattern}
+    docker images | grep "magneticio/${project}"
 }
 
 function process() {
-    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_haproxy} && cd ${dir}/haproxy
+
+    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_docker} && mkdir -p ${target_vamp}
 
     if [ ${flag_make} -eq 1 ]; then
-        go_build
+        docker_make
+        go_make
     fi
 
-    cd ${dir}
-    regex="^${dir}\/haproxy\/(.+)\/Dockerfile$"
-    images=()
+    if [ ${flag_clean} -eq 1 ]; then
+        docker_rmi ${docker_image_name}
+    fi
 
-    for file in `find ${dir}/haproxy | grep Dockerfile`
-    do
-      [[ ${file} =~ $regex ]]
-        haproxy_version="${BASH_REMATCH[1]}"
-        docker_path=${dir}/${target_haproxy}/${haproxy_version}
-        image=${haproxy_version}
-        images+=(${image})
-        image_name=magneticio/vamp-gateway-agent_${image}:${version}
-
-        if [ ${flag_make} -eq 1 ]; then
-          docker_make ${file} ${docker_path}
-          cp -f ${dir}/reload.sh ${dir}/${target_vamp}
-          cp -f ${dir}/validate.sh ${dir}/${target_vamp}
-          cp -f ${dir}/haproxy/${haproxy_version}/haproxy.basic.cfg ${dir}/${target_vamp}
-          cd ${dir}/${target} && tar -zcf ${assembly_go} vamp
-          mv ${dir}/${target}/${assembly_go} ${docker_path} 2> /dev/null
-        fi
-
-        if [ ${flag_clean} -eq 1 ]; then
-            docker_rmi ${image_name}
-        fi
-
-        if [ ${flag_build} -eq 1 ]; then
-            docker_build ${image_name} ${docker_path}
-        fi
-    done
+    if [ ${flag_build} -eq 1 ]; then
+        cd ${dir}/${target_docker}
+        docker_build ${docker_image_name} .
+    fi
 
     if [ ${flag_list} -eq 1 ]; then
-        docker_images images
+        docker_image
     fi
 
     echo "${green}done.${reset}"
