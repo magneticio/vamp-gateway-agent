@@ -16,6 +16,12 @@ type HAProxy struct {
 }
 
 func (haProxy *HAProxy) Init() {
+
+    if len(*logstash) == 0 {
+        logger.Notice("No Logstash host:port set - not sending HAProxy logs.")
+        return
+    }
+
     logger.Info(fmt.Sprintf("Connecting to haproxy log socket: %s", haProxy.LogSocket))
 
     // Set the socket HAProxy can write logs to.
