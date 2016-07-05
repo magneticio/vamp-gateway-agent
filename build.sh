@@ -107,7 +107,8 @@ function go_make() {
 function docker_make {
 
     append_to=${dir}/${target_docker}/Dockerfile
-    cat ${dir}/Dockerfile | grep -v ADD | grep -v ENTRYPOINT > ${append_to}
+
+    sed '/EXPOSE/q' ${dir}/Dockerfile > ${append_to}
 
     echo "${green}appending common code to: ${append_to} ${reset}"
     function append() {

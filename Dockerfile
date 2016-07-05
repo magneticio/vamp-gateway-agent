@@ -17,6 +17,10 @@ RUN set -ex && \
 
 EXPOSE 1988
 
-ADD https://bintray.com/artifact/download/magnetic-io/downloads/vamp-gateway-agent/vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz /usr/local
+ADD https://bintray.com/artifact/download/magnetic-io/downloads/vamp-gateway-agent/vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz /usr/local/
+
+RUN cd /usr/local/ && \
+    tar xzvf vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz && \
+    rm -Rf vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz
 
 ENTRYPOINT ["/usr/local/vamp/vamp-gateway-agent"]
