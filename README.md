@@ -22,7 +22,7 @@ Usage of ./vamp-gateway-agent:
   -configurationBasicFile string
         Basic HAProxy configuration. (default "haproxy.basic.cfg")
   -configurationPath string
-        HAProxy configuration path. (default "/opt/vamp/")
+        HAProxy configuration path. (default "/usr/local/vamp/")
   -debug
         Switches on extra log statements.
   -help
@@ -34,7 +34,7 @@ Usage of ./vamp-gateway-agent:
   -retryTimeout int
         Default retry timeout in seconds. (default 5)
   -scriptPath
-        HAProxy validation and reload script path. (default "/opt/vamp/")
+        HAProxy validation and reload script path. (default "/usr/local/vamp/")
   -storeConnection string
         Key-value store connection string.
   -storeKey string

@@ -18,10 +18,10 @@ var (
     storeConnection = flag.String("storeConnection", "", "Key-value store connection string.")
     storeKey = flag.String("storeKey", "/vamp/haproxy/1.6", "HAProxy configuration store key.")
 
-    configurationPath = flag.String("configurationPath", "/opt/vamp/", "HAProxy configuration path.")
+    configurationPath = flag.String("configurationPath", "/usr/local/vamp/", "HAProxy configuration path.")
     configurationBasicFile = flag.String("configurationBasicFile", "haproxy.basic.cfg", "Basic HAProxy configuration.")
 
-    scriptPath = flag.String("scriptPath", "/opt/vamp/", "HAProxy validation and reload script path.")
+    scriptPath = flag.String("scriptPath", "/usr/local/vamp/", "HAProxy validation and reload script path.")
 
     timeout = flag.Int("retryTimeout", 5, "Default retry timeout in seconds.")
 
