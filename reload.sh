@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 configuration=$1
 pid_file=/usr/local/vamp/haproxy.pid
