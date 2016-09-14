@@ -16,7 +16,7 @@ var (
 
     storeType = flag.String("storeType", "", "zookeeper, consul or etcd.")
     storeConnection = flag.String("storeConnection", "", "Key-value store connection string.")
-    storeKey = flag.String("storeKey", "/vamp/haproxy/1.6", "HAProxy configuration store key.")
+    storeKey = flag.String("storeKey", "/vamp/gateways/haproxy/1.6", "HAProxy configuration store key.")
 
     configurationPath = flag.String("configurationPath", "/usr/local/vamp/", "HAProxy configuration path.")
     configurationBasicFile = flag.String("configurationBasicFile", "haproxy.basic.cfg", "Basic HAProxy configuration.")
