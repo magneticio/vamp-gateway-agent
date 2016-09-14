@@ -1,16 +1,16 @@
 FROM alpine:3.4
 
-ENV VAMP_GATEWAY_VERSION=0.9.0
+ENV VAMP_GATEWAY_VERSION=0.9.1
 
 RUN set -ex && \
     apk --update add bash iptables musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
     mkdir /usr/src && \
-    curl -fL http://www.haproxy.org/download/1.6/src/haproxy-1.6.6.tar.gz | tar xzf - -C /usr/src && \
-    cd /usr/src/haproxy-1.6.6 && \
+    curl -fL http://www.haproxy.org/download/1.6/src/haproxy-1.6.8.tar.gz | tar xzf - -C /usr/src && \
+    cd /usr/src/haproxy-1.6.8 && \
     make TARGET=linux2628 USE_PCRE=1 USE_ZLIB=1 && \
     make install-bin && \
     cd .. && \
-    rm -rf /usr/src/haproxy-1.6.6 && \
+    rm -rf /usr/src/haproxy-1.6.8 && \
     apk del musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
     apk add musl pcre zlib && \
     rm /var/cache/apk/*
