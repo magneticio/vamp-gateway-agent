@@ -23,15 +23,21 @@ done < "${configuration}"
 # and for this implementation also: https://github.com/mesosphere/marathon-lb/blob/master/service/haproxy/run
 
 for i in "${PORTS[@]}"; do
-  iptables -w -I INPUT -p tcp --dport ${i} --syn -j DROP
+  iptables -w -I INPUT -p tcp --dport "${i}" --syn -j DROP
 done
 
 sleep 0.1
 
-haproxy -f ${configuration} -p ${pid_file} -D -st $(cat ${pid_file})
+haproxy -f "${configuration}" -p "${pid_file}" -D -st "$( cat ${pid_file} )"
 
 for i in "${PORTS[@]}"; do
-  iptables -w -D INPUT -p tcp --dport ${i} --syn -j DROP
+  iptables -w -D INPUT -p tcp --dport "${i}" --syn -j DROP
 done
 
 sleep 1
+
+awk -v host="$( hostname -i )" \
+  'BEGIN { print "127.0.0.1\tlocalhost\n::1\tlocalhost\n" };
+  /^  acl .* hdr\(host\) -i .*$/ { print host "\t" $NF }' "${configuration}" > /etc/hosts
+
+kill -s SIGHUP $( pidof dnsmasq )

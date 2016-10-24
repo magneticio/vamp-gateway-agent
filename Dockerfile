@@ -12,12 +12,14 @@ RUN set -ex && \
     cd .. && \
     rm -rf /usr/src/haproxy-1.6.8 && \
     apk del musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
-    apk add musl pcre zlib && \
+    apk add musl pcre zlib dnsmasq && \
     rm /var/cache/apk/*
 
 EXPOSE 1988
 
 ADD https://bintray.com/artifact/download/magnetic-io/downloads/vamp-gateway-agent/vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz /usr/local/
+
+ADD dnsmasq.conf /etc/dnsmasq.conf
 
 RUN cd /usr/local/ && \
     tar xzvf vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz && \
