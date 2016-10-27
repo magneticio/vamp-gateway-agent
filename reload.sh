@@ -36,8 +36,9 @@ done
 
 sleep 1
 
+# Add virtual hosts to /etc/hosts and reload dnsmasq
 awk -v host="$( hostname -i )" \
   'BEGIN { print "127.0.0.1\tlocalhost\n::1\tlocalhost\n" };
   /^  acl .* hdr\(host\) -i .*$/ { print host "\t" $NF }' "${configuration}" > /etc/hosts
 
-kill -s SIGHUP $( pidof dnsmasq )
+kill -s SIGHUP $( pidof dnsmasq ) || dnsmasq
