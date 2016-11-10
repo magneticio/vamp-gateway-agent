@@ -37,8 +37,15 @@ done
 sleep 1
 
 # Add virtual hosts to /etc/hosts and reload dnsmasq
-awk -v host="$( hostname -i )" \
-  'BEGIN { print "127.0.0.1\tlocalhost\n::1\tlocalhost\n" };
-  /^  acl .* hdr\(host\) -i .*$/ { print host "\t" $NF }' "${configuration}" > /etc/hosts
+if [[ -n $VAMP_VGA_DNS_ENABLE ]]; then
+  # Overwrite default port of 5353, if specified
+  if [[ -n $VAMP_VGA_DNS_PORT && $VAMP_VGA_DNS_PORT =~ ^-?[0-9]+$ ]]; then
+    echo "port=${VAMP_VGA_DNS_PORT}" > /etc/dnsmasq.conf
+  fi
 
-kill -s SIGHUP $( pidof dnsmasq ) || dnsmasq
+  awk -v host="$( hostname -i )" \
+    'BEGIN { print "127.0.0.1\tlocalhost\n::1\tlocalhost\n" };
+    /^  acl .* hdr\(host\) -i .*$/ { print host "\t" $NF }' "${configuration}" > /etc/hosts
+
+  kill -s SIGHUP $( pidof dnsmasq ) || dnsmasq
+fi
