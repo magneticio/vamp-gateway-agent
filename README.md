@@ -84,6 +84,11 @@ output {
 
 **Note:** Logstash configuration depends on HAProxy log configuration and that is not in the scope of the agent (HAProxy configuration is retrieved from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/)). 
 
+To enable dnsmasq to resolve virtual hosts, pass the following environment variables to the Docker container:
+
+- `VAMP_VGA_DNS_ENABLE` Set to non-empty value to enable 
+- `VAMP_VGA_DNS_PORT` Listening port, default: 5353
+
 ## Building Binary
 
 Using the `build.sh` script:
