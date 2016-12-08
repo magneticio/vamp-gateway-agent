@@ -1,0 +1,12 @@
+workspace:
+  base: /go
+  path: src/github.com/magneticio/vamp-gateway-agent
+
+pipeline:
+  build:
+    image: iamtew/vamp-buildserver:dev
+    commands:
+      - go get github.com/tools/godep
+      - godep restore
+      - go install
+      - CGO_ENABLED=0 go build -v -a -installsuffix cgo
