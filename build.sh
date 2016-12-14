@@ -6,7 +6,12 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-version="$( git describe --tags )"
+if [ "$(git describe --tags)" = "$(git describe --abbrev=0)" ]; then
+    version="$( git describe --tags )"
+else
+    version="katana"
+fi
+
 target='target'
 target_vamp=${target}'/vamp'
 target_docker=${target}'/docker'
@@ -135,6 +140,10 @@ function docker_image {
 }
 
 function process() {
+
+    docker_image_name="magneticio/${project}:${version}"
+
+    echo "${green}version: ${version}${reset}"
 
     rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_docker} && mkdir -p ${target_vamp}
 
