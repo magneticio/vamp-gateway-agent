@@ -28,7 +28,7 @@ done
 
 sleep 0.1
 
-haproxy -f "${configuration}" -p "${pid_file}" -D -st "$( cat ${pid_file} )"
+haproxy -f "${configuration}" -p "${pid_file}" -D -st $( cat ${pid_file} )
 
 for i in "${PORTS[@]}"; do
   iptables -w -D INPUT -p tcp --dport "${i}" --syn -j DROP
