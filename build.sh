@@ -6,7 +6,7 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-if [ "$(git describe --tags)" = "$(git describe --abbrev=0)" ]; then
+if [ "$(git describe --tags)" = "$(git describe --abbrev=0 --tags)" ]; then
     version="$( git describe --tags )"
 else
     version="katana"
