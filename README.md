@@ -5,47 +5,33 @@
 [![Build Status](https://travis-ci.org/magneticio/vamp-gateway-agent.svg?branch=master)](https://travis-ci.org/magneticio/vamp-gateway-agent)
 [![Download](https://api.bintray.com/packages/magnetic-io/downloads/vamp-gateway-agent/images/download.svg) ](https://bintray.com/magnetic-io/downloads/vamp-gateway-agent/_latestVersion)
 
-HAProxy with configuration from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/).
-
 [HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to: 
 
-- read the HAProxy configuration from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/) and reloads the HAProxy on each configuration change with as close to zero client request interruption as possible.
-- read the logs from HAProxy over socket and push them to Logstash over UDP.
+- read the HAProxy configuration using [confd](https://github.com/kelseyhightower/confd) and reload HAProxy on each configuration change with as little client traffic interruption as possible.
+- send HAProxy log to Logstash/Elasticsearch.
 - handle and recover from ZooKeeper, etcd, Consul and Logstash outages without interrupting the haproxy process and client requests.
 
-It is possible to specify a custom configuration (based on arguments `configurationPath/configurationBasicFile`).
-In that case any configuration read from KV store is appended to the content of custom configuration, stored as `configurationPath/haproxy.cnf` and used for the next HAProxy reload.
+Vamp generated HAProxy configuration will be appended to base configuration `haproxy.basic.cnf`.
+This allows using different base configuration if needed.
 
 ## Usage
 
-```
-$ ./vamp-gateway-agent: -h
-                                       
-Usage of ./vamp-gateway-agent:
-  -configurationBasicFile string
-        Basic HAProxy configuration. (default "haproxy.basic.cfg")
-  -configurationPath string
-        HAProxy configuration path. (default "/usr/local/vamp/")
-  -debug
-        Switches on extra log statements.
-  -help
-        Print usage.
-  -logo
-        Show logo. (default true)
-  -logstash string
-          Logstash 'host:port' (UDP), if set to '' then sending logs is disabled. (default "127.0.0.1:10001")
-  -retryTimeout int
-        Default retry timeout in seconds. (default 5)
-  -scriptPath
-        HAProxy validation and reload script path. (default "/usr/local/vamp/")
-  -storeConnection string
-        Key-value store connection string.
-  -storeKey string
-        HAProxy configuration store key. (default "/vamp/gateways/haproxy/1.6")
-  -storeType string
-        zookeeper, consul or etcd.
+Following environment variables are mandatory:
+
+- `VAMP_KEY_VALUE_STORE_TYPE <=> confd -backend`
+- `VAMP_KEY_VALUE_STORE_CONNECTION <=> confd -node`
+- `VAMP_KEY_VALUE_STORE_PATH <=> key used by confd`
+
+Example:
 
 ```
+docker run -e VAMP_KEY_VALUE_STORE_TYPE=zookeeper \
+           -e VAMP_KEY_VALUE_STORE_CONNECTION=localhost:2181 \
+           -e VAMP_KEY_VALUE_STORE_PATH=/vamp/gateways/haproxy/1.6 \
+           magneticio/vamp-gateway-agent:katana
+```
+
+Available Docker images can be found at [Docker Hub](https://hub.docker.com/r/magneticio/vamp-gateway-agent/).
 
 Logstash example configuration:
 
@@ -116,20 +102,11 @@ Usage of ./build.sh:
   -h|--help   Help.
   -l|--list   List built Docker images.
   -r|--remove Remove Docker image.
-  -m|--make   Build the binary and copy it to the Docker directories.
+  -m|--make   Make Docker image files.
   -b|--build  Build Docker image.
-  -a|--all    Build all binaries, by default only linux:amd64.
 
 ```
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent:0.9.2
-
-## Docker Image
-
-[Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
-
-```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:0.9.2
-```
+- magneticio/vamp-gateway-agent:katana
