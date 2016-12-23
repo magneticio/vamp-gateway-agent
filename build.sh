@@ -6,17 +6,17 @@ reset=`tput sgr0`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 
-if [ "$(git describe --tags)" = "$(git describe --abbrev=0 --tags)" ]; then
-    version="$( git describe --tags )"
-else
-    version="katana"
-fi
-
 target='target'
-target_vamp=${target}'/vamp'
 target_docker=${target}'/docker'
 project="vamp-gateway-agent"
-docker_image_name="magneticio/${project}:${version}"
+
+if [ "$(git describe --tags)" = "$(git describe --abbrev=0 --tags)" ]; then
+    version="$( git describe --tags )"
+    docker_image_name="magneticio/${project}:${version}"
+else
+    version="katana [$( git describe --tags )]"
+    docker_image_name="magneticio/${project}:katana"
+fi
 
 cd ${dir}
 
@@ -26,7 +26,6 @@ function parse_command_line() {
     flag_clean=0
     flag_make=0
     flag_build=0
-    flag_build_all=0
 
     for key in "$@"
     do
@@ -47,9 +46,6 @@ function parse_command_line() {
         flag_make=1
         flag_build=1
         ;;
-        -a|--all)
-        flag_build_all=1
-        ;;
         *)
         ;;
     esac
@@ -61,67 +57,14 @@ function build_help() {
     echo "${yellow}  -h|--help   ${green}Help.${reset}"
     echo "${yellow}  -l|--list   ${green}List built Docker images.${reset}"
     echo "${yellow}  -r|--remove ${green}Remove Docker image.${reset}"
-    echo "${yellow}  -m|--make   ${green}Build the binary and copy it to the Docker directories.${reset}"
+    echo "${yellow}  -m|--make   ${green}Make Docker image files.${reset}"
     echo "${yellow}  -b|--build  ${green}Build Docker image.${reset}"
-    echo "${yellow}  -a|--all    ${green}Build all binaries, by default only linux:amd64.${reset}"
-}
-
-function go_make() {
-    cd ${dir}
-    rm -Rf ${dir}/${target_vamp}
-
-    echo "${green}executing ${yellow}godep restore${reset}"
-    go get github.com/tools/godep
-    godep restore
-    go install
-
-    for goos in darwin linux windows; do
-      for goarch in 386 amd64; do
-
-        if [ ${flag_build_all} -eq 1 ] || [[ ${goos} == "linux" && ${goarch} == "amd64" ]]; then
-
-          cd ${dir}
-          mkdir ${dir}/${target_vamp}
-
-          export GOOS=${goos}
-          export GOARCH=${goarch}
-
-          echo "${green}building ${yellow}${project}_${version}_${goos}_${goarch}${reset}"
-
-          CGO_ENABLED=0 go build -ldflags "-X main.version=${version}" -a -installsuffix cgo
-
-          if [ "${goos}" == "windows" ]; then
-              mv ${dir}/${project}.exe ${target_vamp}
-          else
-              mv ${dir}/${project} ${target_vamp} && chmod +x ${target_vamp}/${project}
-          fi
-
-          assembly_go="${project}_${version}_${goos}_${goarch}.tar.gz"
-
-          cp -f ${dir}/reload.sh ${dir}/validate.sh ${dir}/haproxy.basic.cfg ${dir}/${target_vamp}
-          cd ${dir}/${target} && tar -zcf ${assembly_go} vamp
-          mv ${dir}/${target}/${assembly_go} ${dir}/${target_docker} 2> /dev/null
-
-          rm -Rf ${dir}/${target_vamp} 2> /dev/null
-
-        fi
-      done
-    done
 }
 
 function docker_make {
-
-    append_to=${dir}/${target_docker}/Dockerfile
-
-    sed '/EXPOSE/q' ${dir}/Dockerfile > ${append_to}
-
-    echo "${green}appending common code to: ${append_to} ${reset}"
-    function append() {
-        printf "\n$1\n" >> ${append_to}
-    }
-
-    append "ADD ${project}_${version}_linux_amd64.tar.gz /usr/local"
-    append "ENTRYPOINT [\"/usr/local/vamp/${project}\"]"
+    echo ${version} > ${dir}/${target_docker}/version
+    cp ${dir}/Dockerfile ${dir}/${target_docker}/Dockerfile
+    cp -f ${dir}/vamp-gateway-agent.sh ${dir}/reload.sh ${dir}/validate.sh ${dir}/haproxy.basic.cfg ${dir}/${target_docker}
 }
 
 function docker_build {
@@ -141,15 +84,12 @@ function docker_image {
 
 function process() {
 
-    docker_image_name="magneticio/${project}:${version}"
-
     echo "${green}version: ${version}${reset}"
 
-    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_docker} && mkdir -p ${target_vamp}
+    rm -Rf ${dir}/${target} 2> /dev/null && mkdir -p ${dir}/${target_docker}
 
     if [ ${flag_make} -eq 1 ]; then
         docker_make
-        go_make
     fi
 
     if [ ${flag_clean} -eq 1 ]; then

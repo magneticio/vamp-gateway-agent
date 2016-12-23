@@ -1,9 +1,10 @@
 FROM alpine:3.4
 
-ENV VAMP_GATEWAY_VERSION=0.9.2
+ADD version vamp-gateway-agent.sh reload.sh validate.sh haproxy.basic.cfg /usr/local/vamp/
+ADD https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64 /usr/bin/confd
 
 RUN set -ex && \
-    apk --update add bash iptables musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
+    apk --update add bash iptables musl-dev linux-headers curl gcc pcre-dev make zlib-dev dnsmasq && \
     mkdir /usr/src && \
     curl -fL http://www.haproxy.org/download/1.6/src/haproxy-1.6.10.tar.gz | tar xzf - -C /usr/src && \
     cd /usr/src/haproxy-1.6.10 && \
@@ -13,17 +14,12 @@ RUN set -ex && \
     rm -rf /usr/src/haproxy-1.6.10 && \
     apk del musl-dev linux-headers curl gcc pcre-dev make zlib-dev && \
     apk add musl pcre zlib && \
-    rm /var/cache/apk/*
-
-RUN apk --no-cache add dnsmasq && \
-    echo "port=5353" > /etc/dnsmasq.conf
+    rm /var/cache/apk/* && \
+    echo "port=5353" > /etc/dnsmasq.conf && \
+    chmod u+x /usr/bin/confd && \
+    chmod u+x /usr/local/vamp/vamp-gateway-agent.sh /usr/local/vamp/reload.sh /usr/local/vamp/validate.sh
 
 EXPOSE 1988
 
-ADD https://bintray.com/artifact/download/magnetic-io/downloads/vamp-gateway-agent/vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz /usr/local/
+ENTRYPOINT ["/usr/local/vamp/vamp-gateway-agent.sh"]
 
-RUN cd /usr/local/ && \
-    tar xzvf vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz && \
-    rm -Rf vamp-gateway-agent_${VAMP_GATEWAY_VERSION}_linux_amd64.tar.gz
-
-ENTRYPOINT ["/usr/local/vamp/vamp-gateway-agent"]
