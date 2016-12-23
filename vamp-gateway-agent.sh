@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+: "${VAMP_GATEWAY_AGENT_LOGO:=TRUE}"
+
+if [ "$VAMP_GATEWAY_AGENT_LOGO" = "TRUE" ] || [ "$VAMP_GATEWAY_AGENT_LOGO" = "1" ]; then
 echo "
 ██╗   ██╗ █████╗ ███╗   ███╗██████╗      ██████╗  █████╗ ████████╗███████╗██╗    ██╗ █████╗ ██╗   ██╗
 ██║   ██║██╔══██╗████╗ ████║██╔══██╗    ██╔════╝ ██╔══██╗╚══██╔══╝██╔════╝██║    ██║██╔══██╗╚██╗ ██╔╝
@@ -8,12 +11,13 @@ echo "
  ╚████╔╝ ██║  ██║██║ ╚═╝ ██║██║         ╚██████╔╝██║  ██║   ██║   ███████╗╚███╔███╔╝██║  ██║   ██║
   ╚═══╝  ╚═╝  ╚═╝╚═╝     ╚═╝╚═╝          ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝
 "
+fi
 
 : "${VAMP_KEY_VALUE_STORE_PATH?not provided.}"
 : "${VAMP_KEY_VALUE_STORE_TYPE?not provided.}"
 : "${VAMP_KEY_VALUE_STORE_CONNECTION?not provided.}"
 
-printf "VERSION: " && cat /usr/local/vamp/version
+printf "VAMP GATEWAY AGENT: " && cat /usr/local/vamp/version
 /usr/bin/confd -version
 
 echo "VAMP_KEY_VALUE_STORE_TYPE       : ${VAMP_KEY_VALUE_STORE_TYPE}"
