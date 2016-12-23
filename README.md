@@ -1,9 +1,11 @@
 # Vamp Gateway Agent
 
-HAProxy with configuration from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/).
-
+[![Join the chat at https://gitter.im/magneticio/vamp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/magneticio/vamp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Docker](https://img.shields.io/badge/docker-images-blue.svg)](https://hub.docker.com/r/magneticio/vamp-gateway-agent/tags/)
 [![Build Status](https://travis-ci.org/magneticio/vamp-gateway-agent.svg?branch=master)](https://travis-ci.org/magneticio/vamp-gateway-agent)
-[ ![Download](https://api.bintray.com/packages/magnetic-io/downloads/vamp-gateway-agent/images/download.svg) ](https://bintray.com/magnetic-io/downloads/vamp-gateway-agent/_latestVersion)
+[![Download](https://api.bintray.com/packages/magnetic-io/downloads/vamp-gateway-agent/images/download.svg) ](https://bintray.com/magnetic-io/downloads/vamp-gateway-agent/_latestVersion)
+
+HAProxy with configuration from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/).
 
 [HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to: 
 
@@ -122,15 +124,12 @@ Usage of ./build.sh:
 
 Docker images after the build (e.g. `./build.sh -b`): 
 
-- magneticio/vamp-gateway-agent:0.9.1
+- magneticio/vamp-gateway-agent:0.9.2
 
 ## Docker Image
 
 [Docker Hub Repo](https://hub.docker.com/r/magneticio/vamp-gateway-agent/)
 
-[![](https://badge.imagelayers.io/magneticio/vamp-gateway-agent:0.9.1.svg)](https://imagelayers.io/?images=magneticio/vamp-gateway-agent:0.9.1)
-
-
 ```
-docker run --net=host --restart=always magneticio/vamp-gateway-agent:0.9.1
+docker run --net=host --restart=always magneticio/vamp-gateway-agent:0.9.2
 ```
