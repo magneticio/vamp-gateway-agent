@@ -76,20 +76,6 @@ To enable dnsmasq to resolve virtual hosts, pass the following environment varia
 - `VAMP_VGA_DNS_ENABLE` Set to non-empty value to enable 
 - `VAMP_VGA_DNS_PORT` Listening port, default: 5353
 
-## Building Binary
-
-Using the `build.sh` script:
-```
-  ./build.sh --make
-```
-
-Alternatively:
-
-- `go get github.com/tools/godep`
-- `godep restore`
-- `go install`
-- `CGO_ENABLED=0 go build -v -a -installsuffix cgo`
-
  
 ## Building Docker Images
 
