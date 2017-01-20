@@ -1,0 +1,25 @@
+#! /bin/bash
+
+handle() { echo "confd/run: got signal"; exit; }
+trap handle SIGINT
+
+[[ -e /usr/local/vamp/good2go ]] || { sleep 5; exit 1; }
+
+
+echo "confd/run: looking for confd configuration and templates"
+for dependency in /usr/local/vamp/confd/conf.d/workflow.toml /usr/local/vamp/confd/templates/haproxy.tmpl ; do
+  if [[ ! -s $dependency ]] ; then
+    >&2 echo "confd/run: error: no such file: $dependency"
+    exit 1
+  fi
+done
+
+
+echo "confd/run: attempting to retrieve HAproxy configuration"
+/usr/bin/confd \
+  -onetime=true \
+  -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
+  -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
+  -confdir /usr/local/vamp/confd \
+  || { >&2 echo "confd/run: bad run"; exit 1; }
+

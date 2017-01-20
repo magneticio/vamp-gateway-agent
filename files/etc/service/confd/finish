@@ -1,0 +1,7 @@
+#! /bin/bash
+
+interval=5
+
+echo "confd/stop: waiting ${interval} second(s) until next poll"
+sleep $interval
+

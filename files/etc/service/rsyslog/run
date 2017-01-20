@@ -1,0 +1,9 @@
+#! /bin/bash
+
+handle() { echo "confd/run: got signal"; exit; }
+trap handle SIGINT
+
+cmd="rsyslogd -n -f /etc/rsyslogd.conf -i /var/run/rsyslogd.pid"
+echo "rsyslogd/run: starting: $cmd"
+
+exec $cmd

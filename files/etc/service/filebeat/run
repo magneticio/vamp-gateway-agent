@@ -1,0 +1,10 @@
+#! /bin/bash
+
+handle() { echo "filebeat/run: got signal"; exit; }
+trap handle SIGINT
+
+[[ -e /usr/local/vamp/good2go ]] || exit 1
+
+exec 2>&1
+exec /usr/local/bin/filebeat -c /usr/local/filebeat/filebeat.yml -e
+
