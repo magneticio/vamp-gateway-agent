@@ -14,12 +14,9 @@ for dependency in /usr/local/vamp/confd/conf.d/workflow.toml /usr/local/vamp/con
   fi
 done
 
-
-echo "confd/run: attempting to retrieve HAproxy configuration"
-/usr/bin/confd \
-  -onetime=true \
-  -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
-  -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
-  -confdir /usr/local/vamp/confd \
-  || { >&2 echo "confd/run: bad run"; exit 1; }
-
+echo "confd/run: polling for changes"
+exec /usr/bin/confd \
+       -onetime=true \
+       -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
+       -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
+       -confdir /usr/local/vamp/confd
