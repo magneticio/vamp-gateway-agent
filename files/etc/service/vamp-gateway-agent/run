@@ -46,7 +46,7 @@ src = "haproxy.tmpl"
 dest = "/usr/local/vamp/haproxy.cfg"
 keys = [ "${VAMP_KEY_VALUE_STORE_PATH}" ]
 check_cmd = "/usr/local/vamp/validate.sh {{.src}}"
-reload_cmd = "/usr/local/vamp/reload.sh /usr/local/vamp/haproxy.cfg"
+reload_cmd = "/etc/service/haproxy/run"
 EOT
 
 cp /usr/local/vamp/haproxy.basic.cfg /usr/local/vamp/confd/templates/haproxy.tmpl
