@@ -8,10 +8,23 @@ trap handle SIGINT
 haproxy_cfg="/usr/local/vamp/haproxy.cfg"
 haproxy_pid="/usr/local/vamp/haproxy.pid"
 
+# config age in seconds
+seconds=5
 
 if [[ ! -e $haproxy_cfg ]] ; then
   >&2 echo "haproxy/run: error: no such file: $haproxy_cfg"
   exit 1
+else
+  # echo "haproxy/run: checking if config is newer than $seconds minute(s)"
+  now="$( date +%s )"
+  mod="$( stat -L -c %Y $haproxy_cfg )"
+  age="$(( $now - $mod ))"
+
+  if [[ $age -gt $seconds ]] ; then
+    exit 0
+  else
+    echo "haproxy/conf: config is $age old, newer than $seconds seconds, reloading"
+  fi
 fi
 
 if [[ ! -e $haproxy_pid ]] ; then
