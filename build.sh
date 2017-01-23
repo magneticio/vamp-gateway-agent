@@ -65,7 +65,6 @@ function docker_make {
     echo ${version} > ${dir}/${target_docker}/version
     cp ${dir}/Dockerfile ${dir}/${target_docker}/Dockerfile
     cp -Rf ${dir}/files ${dir}/${target_docker}
-    cp -f ${dir}/vamp-gateway-agent.sh ${dir}/reload.sh ${dir}/validate.sh ${dir}/haproxy.basic.cfg ${dir}/${target_docker}
 }
 
 function docker_build {
