@@ -23,9 +23,8 @@ fi
 : "${VAMP_KEY_VALUE_STORE_CONNECTION?not provided.}"
 
 
-echo "vamp-gateway-agent/run: waiting for syslog to come online..."
 for try in {1..9} ; do
-  echo "vamp-gateway-agent/run: try: $try"
+  echo "vamp-gateway-agent/run: waiting for syslog to come online..."
   [[ -e /var/run/rsyslogd.pid ]] && break || sleep 1
 done
 
@@ -40,7 +39,7 @@ echo "VAMP_KEY_VALUE_STORE_PATH       : ${VAMP_KEY_VALUE_STORE_PATH}"
 mkdir -p /usr/local/vamp/confd/conf.d
 mkdir -p /usr/local/vamp/confd/templates
 
-echo "creating confd configuration and template"
+echo "vamp-gateway-agent/run: creating confd configuration and template"
 cat <<EOT > /usr/local/vamp/confd/conf.d/workflow.toml
 [template]
 src = "haproxy.tmpl"
@@ -53,6 +52,30 @@ EOT
 cp /usr/local/vamp/haproxy.basic.cfg /usr/local/vamp/confd/templates/haproxy.tmpl
 cat <<EOT >> /usr/local/vamp/confd/templates/haproxy.tmpl
 {{getv "${VAMP_KEY_VALUE_STORE_PATH}"}}
+EOT
+
+cat <<EOT > /usr/local/vamp/confd/conf.d/filebeat.toml
+[template]
+src = "filebeat.tmpl"
+dest = "/usr/local/filebeat/filebeat.yml"
+EOT
+
+cat <<EOT >> /usr/local/vamp/confd/templates/filebeat.tmpl
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /var/log/haproxy.log
+  json.message_key: message
+  json.add_error_key: false
+  json.keys_under_root: true
+
+output.elasticsearch:
+  hosts: ["10.102.1.72:9200"]
+  index: "vamp-vga-%{+yyyy.MM.dd}"
+
+path.home: /usr/local/filebeat
+path.config: \${path.home}
+path.logs: /var/log
 EOT
 
 touch /usr/local/vamp/good2go
