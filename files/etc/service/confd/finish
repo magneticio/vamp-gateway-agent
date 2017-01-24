@@ -1,7 +1,6 @@
 #! /bin/bash
 
-interval=5
+: "${VAMP_GATEWAY_AGENT_CONFD_INTERVAL:=5}"
 
-echo "confd/stop: waiting ${interval} second(s) until next poll"
-sleep $interval
-
+sleep $VAMP_GATEWAY_AGENT_CONFD_INTERVAL
+exit 0
