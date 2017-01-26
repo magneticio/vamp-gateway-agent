@@ -1,8 +1,5 @@
 #! /bin/bash
 
-handle() { echo "haproxy-reload.sh: got signal"; exit; }
-trap handle SIGINT
-
 [[ -e /usr/local/vamp/good2go ]] || exit 1
 
 haproxy_cfg="/usr/local/vamp/haproxy.cfg"
