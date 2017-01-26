@@ -17,4 +17,5 @@ exec /usr/bin/confd \
        -onetime=true \
        -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
        -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
+       -log-level=warn \
        -confdir /usr/local/vamp/confd
