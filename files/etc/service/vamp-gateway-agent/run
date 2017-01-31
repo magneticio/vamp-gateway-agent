@@ -75,6 +75,7 @@ output.elasticsearch:
   index: "vamp-vga-%{+yyyy-MM-dd}"
 
 path.home: /usr/local/filebeat
+template.path: "${path.config}/filebeat.template.json"
 path.config: \${path.home}
 path.logs: /var/log
 EOT
