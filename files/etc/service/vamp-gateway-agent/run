@@ -73,10 +73,11 @@ filebeat.prospectors:
 output.elasticsearch:
   hosts: ["$VAMP_PERSISTENCE_STORE_CONNECTION"]
   index: "vamp-vga-%{+yyyy-MM-dd}"
+  template.path: \${path.config}/filebeat.template.json
 
 path.home: /usr/local/filebeat
-template.path: "\${path.config}/filebeat.template.json"
 path.config: \${path.home}
+path.data: \${path.home}/data
 path.logs: /var/log
 EOT
 
