@@ -21,7 +21,7 @@ fi
 : "${VAMP_KEY_VALUE_STORE_PATH?not provided.}"
 : "${VAMP_KEY_VALUE_STORE_TYPE?not provided.}"
 : "${VAMP_KEY_VALUE_STORE_CONNECTION?not provided.}"
-: "${VAMP_PERSISTENCE_STORE_CONNECTION?not provided.}"
+: "${VAMP_ELASTICSEARCH_URL?not provided.}"
 
 
 for try in {1..9} ; do
@@ -71,7 +71,7 @@ filebeat.prospectors:
   json.keys_under_root: true
 
 output.elasticsearch:
-  hosts: ["$VAMP_PERSISTENCE_STORE_CONNECTION"]
+  hosts: ["$VAMP_ELASTICSEARCH_URL"]
   index: "vamp-vga-%{+yyyy-MM-dd}"
   template.path: \${path.config}/filebeat.template.json
 
