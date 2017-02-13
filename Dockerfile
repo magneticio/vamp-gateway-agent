@@ -50,5 +50,6 @@ RUN set -xe \
 EXPOSE 1988
 
 ADD files/ /
+ADD version /usr/local/vamp/version
 
 ENTRYPOINT ["/sbin/runsvinit"]
