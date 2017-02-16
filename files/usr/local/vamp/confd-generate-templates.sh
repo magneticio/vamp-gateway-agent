@@ -77,7 +77,7 @@ metricbeat.modules:
 
 output.elasticsearch:
   hosts: ["$VAMP_ELASTICSEARCH_URL"]
-  index: "vamp-vwa-%{+yyyy-MM-dd}"
+  index: "vamp-vga-%{+yyyy-MM-dd}"
   template.path: /usr/local/metricbeat/metricbeat.template.json
 
 path.home: /usr/local/metricbeat
