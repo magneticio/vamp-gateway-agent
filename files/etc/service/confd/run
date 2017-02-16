@@ -5,7 +5,7 @@ trap handle SIGINT
 
 [[ -e /usr/local/vamp/good2go ]] || exit 1
 
-: "${VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL:=debug}"
+: "${VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL:=warn}"
 
 exec 2>&1
 exec /usr/bin/confd \
