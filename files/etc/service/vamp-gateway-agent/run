@@ -36,6 +36,7 @@ printf "VAMP GATEWAY AGENT: " && cat /usr/local/vamp/version
 echo "VAMP_KEY_VALUE_STORE_TYPE       : ${VAMP_KEY_VALUE_STORE_TYPE}"
 echo "VAMP_KEY_VALUE_STORE_CONNECTION : ${VAMP_KEY_VALUE_STORE_CONNECTION}"
 echo "VAMP_KEY_VALUE_STORE_PATH       : ${VAMP_KEY_VALUE_STORE_PATH}"
+echo "VAMP_ELASTICSEARCH_URL          : ${VAMP_ELASTICSEARCH_URL}"
 
 /usr/local/vamp/confd-generate-templates.sh
 
