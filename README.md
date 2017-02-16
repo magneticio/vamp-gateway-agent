@@ -20,6 +20,7 @@ Following environment variables are mandatory:
 - `VAMP_KEY_VALUE_STORE_TYPE <=> confd -backend`
 - `VAMP_KEY_VALUE_STORE_CONNECTION <=> confd -node`
 - `VAMP_KEY_VALUE_STORE_PATH <=> key used by confd`
+- `VAMP_ELASTICSEARCH_URL <=> http://elasticsearch:9200`
 
 Example:
 
@@ -27,49 +28,13 @@ Example:
 docker run -e VAMP_KEY_VALUE_STORE_TYPE=zookeeper \
            -e VAMP_KEY_VALUE_STORE_CONNECTION=localhost:2181 \
            -e VAMP_KEY_VALUE_STORE_PATH=/vamp/gateways/haproxy/1.6 \
+           -e VAMP_ELASTICSEARCH_URL=http://localhost:9200 \
            magneticio/vamp-gateway-agent:katana
 ```
 
 Available Docker images can be found at [Docker Hub](https://hub.docker.com/r/magneticio/vamp-gateway-agent/).
 
-Logstash example configuration:
-
-```
-input {
-  udp {
-    port => 10001
-    type => haproxy
-  }
-}
-
-filter {
-  grok {
-    match => ["message", "^.+?]: (?<metrics>{.*})$"]
-    match => ["message", "^.*$"]
-  }
-  if [metrics] =~ /.+/ {
-    json {
-      source => "metrics"
-    }
-    if [t] =~ /.+/ {
-      date {
-        match => ["t", "dd/MMM/YYYY:HH:mm:ss.SSS"]
-      }
-    }
-  }
-}
-
-output {
-  elasticsearch {
-    hosts => "elasticsearch:9200"
-  }
-  stdout {
-    codec => rubydebug
-  }
-}
-```
-
-**Note:** Logstash configuration depends on HAProxy log configuration and that is not in the scope of the agent (HAProxy configuration is retrieved from [ZooKeeper](https://zookeeper.apache.org/), [etcd](https://coreos.com/etcd/docs/latest/) or [Consul](https://consul.io/)). 
+### Domain name resolver
 
 To enable dnsmasq to resolve virtual hosts, pass the following environment variables to the Docker container:
 
