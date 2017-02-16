@@ -1,8 +1,8 @@
 #! /bin/bash
 
 # Ensure we have our directories
-dir_confd="/usr/local/vamp/confd/conf.d"
-dir_templates="/usr/local/vamp/confd/templates"
+dir_confd="/etc/confd/conf.d"
+dir_templates="/etc/confd/templates"
 
 mkdir -p "$dir_confd"
 mkdir -p "$dir_templates"
