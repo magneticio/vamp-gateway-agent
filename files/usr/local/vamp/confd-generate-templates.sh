@@ -9,7 +9,7 @@ mkdir -p "$dir_templates"
 
 
 # Generate config and templates for HAproxy
-echo "vamp-gateway-agent/run: creating confd configuration and template"
+echo "vamp-gateway-agent:${BASH_SOURCE[0]}: creating: ${dir_confd}/haproxy.toml"
 cat <<EOT > "${dir_confd}/haproxy.toml"
 [template]
 src = "haproxy.tmpl"
@@ -19,6 +19,7 @@ check_cmd = "/usr/local/vamp/haproxy-validate.sh {{.src}}"
 reload_cmd = "/usr/local/vamp/haproxy-reload.sh"
 EOT
 
+echo "vamp-gateway-agent:${BASH_SOURCE[0]}: creating: ${dir_templates}/haproxy.tmpl"
 cp /usr/local/vamp/haproxy.basic.cfg "${dir_templates}/haproxy.tmpl"
 cat <<EOT >> "${dir_templates}/haproxy.tmpl"
 {{getv "${VAMP_KEY_VALUE_STORE_PATH}"}}
@@ -26,12 +27,14 @@ EOT
 
 
 # Generate config and template for Filebeat
+echo "vamp-gateway-agent:${BASH_SOURCE[0]}: creating: ${dir_confd}/filebeat.toml"
 cat <<EOT > "${dir_confd}/filebeat.toml"
 [template]
 src = "filebeat.tmpl"
 dest = "/usr/local/filebeat/filebeat.yml"
 EOT
 
+echo "vamp-gateway-agent:${BASH_SOURCE[0]}: creating: ${dir_templates}/filebeat.tmpl"
 cat <<EOT >> "${dir_templates}/filebeat.tmpl"
 filebeat.prospectors:
 - input_type: log
@@ -54,12 +57,14 @@ EOT
 
 
 # Generate config and templates for Metricbeat
+echo "vamp-gateway-agent:${BASH_SOURCE[0]}: creating: ${dir_confd}/metricbeat.toml"
 cat <<EOT > "${dir_confd}/metricbeat.toml"
 [template]
 src = "metricbeat.tmpl"
 dest = "/usr/local/metricbeat/metricbeat.yml"
 EOT
 
+echo "vamp-gateway-agent:${BASH_SOURCE[0]}: creating: ${dir_templates}/metricbeat.tmpl"
 cat <<EOT >> "${dir_templates}/metricbeat.tmpl"
 metricbeat.modules:
 - module: system
