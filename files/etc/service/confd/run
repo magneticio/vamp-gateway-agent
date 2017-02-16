@@ -3,30 +3,13 @@
 handle() { echo "confd/run: got signal"; exit; }
 trap handle SIGINT
 
-[[ -e /usr/local/vamp/good2go ]] || { sleep 5; exit 1; }
+[[ -e /usr/local/vamp/good2go ]] || exit 1
 
-dir_confd="/usr/local/vamp/confd/conf.d"
-dir_templates="/usr/local/vamp/confd/templates"
+: "${VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL:=debug}"
 
-dependencies="
-  ${dir_confd}/haproxy.toml
-  ${dir_templates}/haproxy.tmpl
-  ${dir_confd}/filebeat.toml
-  ${dir_templates}/filebeat.tmpl
-  ${dir_confd}/metricbeat.toml
-  ${dir_templates}/metricbeat.tmpl
-"
-
-for dependency in $dependencies ; do
-  if [[ ! -s $dependency ]] ; then
-    >&2 echo "confd/run: error: no such file: $dependency"
-    exit 1
-  fi
-done
-
+exec 2>&1
 exec /usr/bin/confd \
-       -onetime=true \
        -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
        -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
-       -log-level=warn \
-       -confdir ${dir_confd}
+       -log-level="$VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL" \
+       -onetime=true
