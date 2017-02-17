@@ -119,5 +119,5 @@
   "settings": {
     "index.refresh_interval": "5s"
   },
-  "template": "filebeat-*"
+  "template": "vamp-vga-*"
 }
