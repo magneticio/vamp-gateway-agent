@@ -72,12 +72,13 @@ metricbeat.modules:
     - network     # Network stats
     - process     # Per process stats
   enabled: true
-  period: 10s
+  period: 1s
   processes: ['.*']
+  tags: ["gateway"]
 - module: haproxy
   metricsets: ["info", "stat"]
   enabled: true
-  period: 10s
+  period: 1s
   hosts: ["tcp://127.0.0.1:14567"]
 
 output.elasticsearch:
