@@ -74,7 +74,7 @@ metricbeat.modules:
   enabled: true
   period: 1s
   processes: ['.*']
-  tags: ["gateway"]
+  tags: ["vamp",gateway"]
 - module: haproxy
   metricsets: ["info", "stat"]
   enabled: true
