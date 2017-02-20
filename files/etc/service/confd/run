@@ -3,19 +3,13 @@
 handle() { echo "confd/run: got signal"; exit; }
 trap handle SIGINT
 
-[[ -e /usr/local/vamp/good2go ]] || { sleep 5; exit 1; }
+[[ -e /usr/local/vamp/good2go ]] || exit 1
 
+: "${VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL:=warn}"
 
-for dependency in /usr/local/vamp/confd/conf.d/workflow.toml /usr/local/vamp/confd/templates/haproxy.tmpl ; do
-  if [[ ! -s $dependency ]] ; then
-    >&2 echo "confd/run: error: no such file: $dependency"
-    exit 1
-  fi
-done
-
+exec 2>&1
 exec /usr/bin/confd \
-       -onetime=true \
        -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
        -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
-       -log-level=warn \
-       -confdir /usr/local/vamp/confd
+       -log-level="$VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL" \
+       -onetime=true

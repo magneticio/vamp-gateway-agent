@@ -36,49 +36,8 @@ printf "VAMP GATEWAY AGENT: " && cat /usr/local/vamp/version
 echo "VAMP_KEY_VALUE_STORE_TYPE       : ${VAMP_KEY_VALUE_STORE_TYPE}"
 echo "VAMP_KEY_VALUE_STORE_CONNECTION : ${VAMP_KEY_VALUE_STORE_CONNECTION}"
 echo "VAMP_KEY_VALUE_STORE_PATH       : ${VAMP_KEY_VALUE_STORE_PATH}"
+echo "VAMP_ELASTICSEARCH_URL          : ${VAMP_ELASTICSEARCH_URL}"
 
-mkdir -p /usr/local/vamp/confd/conf.d
-mkdir -p /usr/local/vamp/confd/templates
-
-echo "vamp-gateway-agent/run: creating confd configuration and template"
-cat <<EOT > /usr/local/vamp/confd/conf.d/workflow.toml
-[template]
-src = "haproxy.tmpl"
-dest = "/usr/local/vamp/haproxy.cfg"
-keys = [ "${VAMP_KEY_VALUE_STORE_PATH}" ]
-check_cmd = "/usr/local/vamp/haproxy-validate.sh {{.src}}"
-reload_cmd = "/usr/local/vamp/haproxy-reload.sh"
-EOT
-
-cp /usr/local/vamp/haproxy.basic.cfg /usr/local/vamp/confd/templates/haproxy.tmpl
-cat <<EOT >> /usr/local/vamp/confd/templates/haproxy.tmpl
-{{getv "${VAMP_KEY_VALUE_STORE_PATH}"}}
-EOT
-
-cat <<EOT > /usr/local/vamp/confd/conf.d/filebeat.toml
-[template]
-src = "filebeat.tmpl"
-dest = "/usr/local/filebeat/filebeat.yml"
-EOT
-
-cat <<EOT >> /usr/local/vamp/confd/templates/filebeat.tmpl
-filebeat.prospectors:
-- input_type: log
-  paths:
-    - /var/log/haproxy.log
-  json.message_key: message
-  json.add_error_key: false
-  json.keys_under_root: true
-
-output.elasticsearch:
-  hosts: ["$VAMP_ELASTICSEARCH_URL"]
-  index: "vamp-vga-%{+yyyy-MM-dd}"
-  template.path: \${path.config}/filebeat.template.json
-
-path.home: /usr/local/filebeat
-path.config: \${path.home}
-path.data: \${path.home}/data
-path.logs: /var/log
-EOT
+/usr/local/vamp/confd-generate-templates.sh
 
 touch /usr/local/vamp/good2go

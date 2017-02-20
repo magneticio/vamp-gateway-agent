@@ -41,6 +41,14 @@ To enable dnsmasq to resolve virtual hosts, pass the following environment varia
 - `VAMP_VGA_DNS_ENABLE` Set to non-empty value to enable 
 - `VAMP_VGA_DNS_PORT` Listening port, default: 5353
 
+### Metrics
+
+The Vamp gateway agent docker image uses Metricbeat to collect performance metrics and ship them off to Elasticsearch. 
+By default the [system module](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-module-system.html) is configured to store metrics, with the additional tags to ease filtering:
+
+- `vamp`
+- `gateway`
+
  
 ## Building Docker Images
 
