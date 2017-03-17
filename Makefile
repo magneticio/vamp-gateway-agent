@@ -22,6 +22,12 @@ all: default
 default:
 	docker pull $(BUILD_SERVER)
 	docker run \
+		--name buildserver \
+		--interactive \
+		--tty \
+		--rm \
+		--volume /var/run/docker.sock:/var/run/docker.sock \
+		--volume $(shell command -v docker):/usr/bin/docker \
 		--volume $(CURDIR):/srv/src \
 		--workdir=/srv/src \
 		$(BUILD_SERVER) \
