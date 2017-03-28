@@ -52,19 +52,10 @@ By default the [system module](https://www.elastic.co/guide/en/beats/metricbeat/
  
 ## Building Docker Images
 
-```
-$ ./build.sh -h
-
-Usage of ./build.sh:
-
-  -h|--help   Help.
-  -l|--list   List built Docker images.
-  -r|--remove Remove Docker image.
-  -m|--make   Make Docker image files.
-  -b|--build  Build Docker image.
-
+```shell
+make
 ```
 
-Docker images after the build (e.g. `./build.sh -b`): 
+Docker images after the build: `magneticio/vamp-gateway-agent:katana`
 
-- magneticio/vamp-gateway-agent:katana
+For more details on available targets see the contents of the `Makefile`.
