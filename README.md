@@ -4,7 +4,7 @@
 [![Docker](https://img.shields.io/badge/docker-images-blue.svg)](https://hub.docker.com/r/magneticio/vamp-gateway-agent/tags/)
 [![Download](https://api.bintray.com/packages/magnetic-io/downloads/vamp-gateway-agent/images/download.svg) ](https://bintray.com/magnetic-io/downloads/vamp-gateway-agent/_latestVersion)
 
-[HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to: 
+[HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to:
 
 - read the HAProxy configuration using [confd](https://github.com/kelseyhightower/confd) and reload HAProxy on each configuration change with as little client traffic interruption as possible.
 - send HAProxy log to Logstash/Elasticsearch.
@@ -38,18 +38,9 @@ Available Docker images can be found at [Docker Hub](https://hub.docker.com/r/ma
 
 To enable dnsmasq to resolve virtual hosts, pass the following environment variables to the Docker container:
 
-- `VAMP_VGA_DNS_ENABLE` Set to non-empty value to enable 
+- `VAMP_VGA_DNS_ENABLE` Set to non-empty value to enable
 - `VAMP_VGA_DNS_PORT` Listening port, default: 5353
 
-### Metrics
-
-The Vamp gateway agent docker image uses Metricbeat to collect performance metrics and ship them off to Elasticsearch. 
-By default the [system module](https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-module-system.html) is configured to store metrics, with the additional tags to ease filtering:
-
-- `vamp`
-- `gateway`
-
- 
 ## Building Docker Images
 
 ```shell

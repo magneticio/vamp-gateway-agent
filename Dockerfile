@@ -11,9 +11,6 @@ ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v0.11.0
 ENV FILEBEAT_VER=5.1.2
 ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VER}-linux-x86_64.tar.gz
 
-ENV METRICBEAT_VER=5.1.2
-ENV METRICBEAT_URL=https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-${METRICBEAT_VER}-linux-x86_64.tar.gz
-
 RUN set -xe \
     && apk add --no-cache \
       bash \
@@ -49,12 +46,7 @@ RUN set -xe \
     \
     && curl --location --silent --show-error $FILEBEAT_URL --output - | tar zxf - -C /tmp \
     && mv /tmp/filebeat-${FILEBEAT_VER}-linux-x86_64/filebeat /usr/local/bin/ \
-    && rm -rf /tmp/filebeat-${FILEBEAT_VER}-linux-x86_64 \
-    \
-    && mkdir -p /usr/local/metricbeat/ \
-    && curl --location --silent --show-error $METRICBEAT_URL --output - | tar zxf - -C /tmp \
-    && mv /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64/metricbeat /usr/local/metricbeat/ \
-    && rm -rf /tmp/metricbeat-${METRICBEAT_VER}-linux-x86_64
+    && rm -rf /tmp/filebeat-${FILEBEAT_VER}-linux-x86_64
 
 RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
     ALPINE_GLIBC_PACKAGE_VERSION="2.23-r3" && \
