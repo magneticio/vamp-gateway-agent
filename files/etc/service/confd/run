@@ -10,6 +10,6 @@ trap handle SIGINT
 exec 2>&1
 exec /usr/bin/confd \
        -backend ${VAMP_KEY_VALUE_STORE_TYPE} \
-       -node ${VAMP_KEY_VALUE_STORE_CONNECTION} \
+       -node ${VAMP_KEY_VALUE_STORE_CONNECTION//[,]/" -node "} \
        -log-level="$VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL" \
        -onetime=true
