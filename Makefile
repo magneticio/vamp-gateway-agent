@@ -22,7 +22,11 @@ DESTDIR := target
 ifeq ($(shell git describe --tags),$(shell git describe --abbrev=0 --tags))
 	export VERSION := $(shell git describe --tags)
 else
-	export VERSION := katana
+	ifeq ($(VAMP_GIT_BRANCH), $(filter $(VAMP_GIT_BRANCH), "master" ""))
+		export VERSION := katana
+	else
+		export VERSION := $(VAMP_GIT_BRANCH)
+	endif
 endif
 
 
