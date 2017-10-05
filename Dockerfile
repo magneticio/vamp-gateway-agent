@@ -6,7 +6,7 @@ ENV RUNSVINIT_URL=https://github.com/peterbourgon/runsvinit/releases/download/v2
 ENV HAPROXY_VER=1.7.5
 ENV HAPROXY_URL=http://www.haproxy.org/download/1.7/src/haproxy-${HAPROXY_VER}.tar.gz
 
-ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v0.11.0/confd-0.11.0-linux-amd64
+ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v0.13.0/confd-0.13.0-linux-amd64
 
 ENV FILEBEAT_VER=5.1.2
 ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VER}-linux-x86_64.tar.gz
