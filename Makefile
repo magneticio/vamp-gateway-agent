@@ -22,7 +22,7 @@ DESTDIR := target
 ifeq ($(shell git describe --tags),$(shell git describe --abbrev=0 --tags))
 	export VERSION := $(shell git describe --tags)
 else
-	ifeq ($(VAMP_GIT_BRANCH), $(filter $(VAMP_GIT_BRANCH), "master" ""))
+	ifeq ($(VAMP_GIT_BRANCH), $(filter $(VAMP_GIT_BRANCH), master ""))
 		export VERSION := katana
 	else
 		export VERSION := $(VAMP_GIT_BRANCH)
@@ -31,8 +31,11 @@ endif
 
 
 # Default targets to make the docker container
+.PHONY: all
+all: default
+
 .PHONY: default
-default: docker-context docker
+default: docker
 
 
 # Copying all necessary files and setting version under 'target/docker/'
@@ -47,7 +50,7 @@ docker-context:
 # Building the docker container using the generated context from the
 # 'docker-context' target
 .PHONY: docker
-docker:
+docker: docker-context
 	docker build \
 		--tag=magneticio/$(PROJECT):$(VERSION) \
 		--file=$(DESTDIR)/docker/Dockerfile \
@@ -61,4 +64,4 @@ clean:
 # Remove the docker image from the system
 .PHONY: clean-docker
 clean-docker:
-	docker rmi magneticio/$(PROJECT):$(VERSION)
+	-docker rmi magneticio/$(PROJECT):$(VERSION)
