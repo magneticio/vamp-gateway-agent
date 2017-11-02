@@ -21,6 +21,7 @@ RUN set -xe \
       rsyslog \
       runit \
       zlib \
+      jq \
     && curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin \
     && chown 0:0 /sbin/runsvinit \
     && chmod 0775 /sbin/runsvinit \
