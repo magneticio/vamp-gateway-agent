@@ -88,4 +88,6 @@ EXPOSE 1988
 ADD files/ /
 ADD version /usr/local/vamp/version
 
+RUN chmod +x /usr/local/vamp/tokenrenewer.sh
+
 ENTRYPOINT ["/sbin/runsvinit"]
