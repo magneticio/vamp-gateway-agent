@@ -41,3 +41,7 @@ echo "VAMP_ELASTICSEARCH_URL          : ${VAMP_ELASTICSEARCH_URL}"
 /usr/local/vamp/confd-generate-templates.sh
 
 touch /usr/local/vamp/good2go
+
+if [ "${VAMP_KEY_VALUE_STORE_TYPE}" == "vault" ]; then
+  /usr/local/vamp/tokenrenewer.sh &
+fi
