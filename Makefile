@@ -52,7 +52,7 @@ docker-context:
 .PHONY: docker
 docker: docker-context
 	docker build \
-		--tag=magneticio/$(PROJECT):$(VERSION) \
+		--tag=magneticio/$(PROJECT):$(VAMP_TAG_PREFIX)$(VERSION) \
 		--file=$(DESTDIR)/docker/Dockerfile \
 		$(DESTDIR)/docker
 
@@ -64,4 +64,4 @@ clean:
 # Remove the docker image from the system
 .PHONY: clean-docker
 clean-docker:
-	-docker rmi magneticio/$(PROJECT):$(VERSION)
+	-docker rmi magneticio/$(PROJECT):$(VAMP_TAG_PREFIX)$(VERSION)
