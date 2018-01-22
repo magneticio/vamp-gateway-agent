@@ -15,7 +15,7 @@ endif
 
 # Directories
 PROJECT := vamp-gateway-agent
-SRCDIR  := $(CURDIR)
+SRCDIR  := "$(CURDIR)"
 DESTDIR := target
 
 # Determine which version we're building
