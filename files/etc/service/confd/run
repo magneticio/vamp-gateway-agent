@@ -7,6 +7,10 @@ trap handle SIGINT
 
 : "${VAMP_GATEWAY_AGENT_CONFD_LOGLEVEL:=warn}"
 
+if [ -e /usr/local/vamp/token ]; then
+  VAMP_KEY_VALUE_STORE_TOKEN="$( cat /usr/local/vamp/token )"
+fi
+
 exec 2>&1
 
 if [[ -z ${VAMP_KEY_VALUE_STORE_TOKEN} ]] ; then

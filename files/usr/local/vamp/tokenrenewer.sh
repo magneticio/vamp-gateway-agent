@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+if [ -e /usr/local/vamp/token ]; then
+  VAMP_KEY_VALUE_STORE_TOKEN="$( cat /usr/local/vamp/token )"
+fi
+
 TOKEN=${VAMP_KEY_VALUE_STORE_TOKEN}
 URL=${VAMP_KEY_VALUE_STORE_CONNECTION}
 
