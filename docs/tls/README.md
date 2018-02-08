@@ -49,7 +49,7 @@ Let's assume the following:
 
 Now, setup the TLS using self-signed certificate:
 
-- run: `export VGA_DN=*.elb.amazonaws.com && ./build.sh'
+- run: `export VGA_DN=*.elb.amazonaws.com && ./build.sh`
 - we just created (by default): `magneticio/vamp-gateway-agent:tls`, redeploy VGA using that image
 - it should work as before: `curl -H 'Host: 9050.sava.vamp' http://aaa-bbb-ccc.eu-west-1.elb.amazonaws.com`
 - go to Vamp VGA template and update `bind 0.0.0.0:80` to `bind 0.0.0.0:443 ssl crt /usr/local/vamp/vga.pem`
