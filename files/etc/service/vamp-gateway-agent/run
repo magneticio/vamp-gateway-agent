@@ -38,6 +38,7 @@ echo "VAMP_KEY_VALUE_STORE_CONNECTION : ${VAMP_KEY_VALUE_STORE_CONNECTION}"
 echo "VAMP_KEY_VALUE_STORE_PATH       : ${VAMP_KEY_VALUE_STORE_PATH}"
 echo "VAMP_ELASTICSEARCH_URL          : ${VAMP_ELASTICSEARCH_URL}"
 
+cp /usr/local/vamp/haproxy.basic.cfg /usr/local/vamp/haproxy.cfg
 /usr/local/vamp/confd-generate-templates.sh
 
 touch /usr/local/vamp/good2go

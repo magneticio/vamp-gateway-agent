@@ -3,13 +3,17 @@ FROM alpine:3.6
 # https://github.com/peterbourgon/runsvinit
 ENV RUNSVINIT_URL=https://github.com/peterbourgon/runsvinit/releases/download/v2.0.0/runsvinit-linux-amd64.tgz
 
-ENV HAPROXY_VER=1.7.5
+ENV HAPROXY_VER=1.7.10
+ENV HAPROXY_MD5=a9b98a228660dee5ee65b62e3bd57822
 ENV HAPROXY_URL=http://www.haproxy.org/download/1.7/src/haproxy-${HAPROXY_VER}.tar.gz
 
-ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v0.13.0/confd-0.13.0-linux-amd64
+ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v0.15.0/confd-0.15.0-linux-amd64
 
 ENV FILEBEAT_VER=5.1.2
 ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VER}-linux-x86_64.tar.gz
+
+ADD files/ /
+ADD version /usr/local/vamp/version
 
 RUN set -xe \
     && apk add --no-cache \
@@ -21,6 +25,7 @@ RUN set -xe \
       rsyslog \
       runit \
       zlib \
+      openssl \
       jq \
     && curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin \
     && chown 0:0 /sbin/runsvinit \
@@ -36,20 +41,23 @@ RUN set -xe \
       musl-dev \
       pcre-dev \
       zlib-dev \
+      openssl-dev \
     && mkdir /usr/src \
-    && curl -fL $HAPROXY_URL | tar xzf - -C /usr/src \
+    && curl -fL $HAPROXY_URL > /usr/src/haproxy.tar.gz \
+    && echo "$HAPROXY_MD5  /usr/src/haproxy.tar.gz" > /usr/src/haproxy.md5 && md5sum -c /usr/src/haproxy.md5 \
+    && tar xzf /usr/src/haproxy.tar.gz -C /usr/src \
     && cd /usr/src/haproxy-${HAPROXY_VER} \
-    && make TARGET=linux2628 USE_PCRE=1 USE_ZLIB=1 \
+    && make TARGET=linux2628 USE_PCRE=1 USE_ZLIB=1 USE_OPENSSL=1 \
     && make install-bin \
     && cd .. \
-    && rm -rf /usr/src/haproxy-${HAPROXY_VER} \
+    && rm -rf /usr/src/haproxy-${HAPROXY_VER} /usr/src/haproxy.tar.gz /usr/src/haproxy.md5 \
     && apk del build-deps \
     \
     && curl --location --silent --show-error $FILEBEAT_URL --output - | tar zxf - -C /tmp \
     && mv /tmp/filebeat-${FILEBEAT_VER}-linux-x86_64/filebeat /usr/local/bin/ \
-    && rm -rf /tmp/filebeat-${FILEBEAT_VER}-linux-x86_64
-
-RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
+    && rm -rf /tmp/filebeat-${FILEBEAT_VER}-linux-x86_64 && \
+    \
+    ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
     ALPINE_GLIBC_PACKAGE_VERSION="2.23-r3" && \
     ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
     ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
@@ -78,16 +86,12 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
     rm \
         "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
         "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
+        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
+    \
+    chmod +x /usr/local/vamp/tokenrenewer.sh
 
 ENV LANG=C.UTF-8
 
-
 EXPOSE 1988
-
-ADD files/ /
-ADD version /usr/local/vamp/version
-
-RUN chmod +x /usr/local/vamp/tokenrenewer.sh
 
 ENTRYPOINT ["/sbin/runsvinit"]
