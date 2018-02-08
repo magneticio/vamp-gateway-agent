@@ -14,6 +14,7 @@ hash docker 2> /dev/null || { echo "${red}please install ${green}docker ${yellow
 TEMP_DIR=${DIR}/.tmp
 VGA_TAG=${VGA_TAG:-tls}
 VGA_BASE_TAG=${VGA_BASE_TAG:-katana}
+VGA_DN=${VGA_DN:-localhost}
 
 set -e
 
@@ -50,15 +51,13 @@ distinguished_name = dn
 x509_extensions = v3_ca
 
 [ dn ]
-CN = localhost
+CN = ${VGA_DN}
 
 [v3_ca]
 subjectAltName = @alt_names
 
 [ alt_names ]
-DNS.1 = localhost
-IP.1  = 127.0.0.1
-IP.2  = 172.17.0.1
+DNS.1 = ${VGA_DN}
 EOF
 openssl req -x509 -nodes -newkey rsa:2048 -keyout ${TEMP_DIR}/vga_key.pem -out ${TEMP_DIR}/vga_cert.pem -days 3650 -config <(cat ${TEMP_DIR}/vga.csr)
 cat ${TEMP_DIR}/vga_cert.pem ${TEMP_DIR}/vga_key.pem | tee ${TEMP_DIR}/vga.pem
