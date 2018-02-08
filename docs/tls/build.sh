@@ -25,7 +25,6 @@ function step {
 }
 
 function finish {
-  rm -Rf ${TEMP_DIR} 2> /dev/null
   step "Done."
   exit 0
 }
