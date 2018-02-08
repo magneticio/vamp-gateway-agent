@@ -19,12 +19,12 @@ Another approach is to use official VGA (without building the custom image) and 
 
 ### HAProxy configuration
 
-In `haproxy.basic.cfg` file example, port 1988 (stats) has TLS configuration:
+In order to avoid warnings add to global HAProxy configuration:
 ```
-bind :1988 ssl crt /usr/local/vamp/vga.pem
+tune.ssl.default-dh-param 2048
 ```
 
-Similarly Vamp HAProxy template can be updated for TLS use on all ports.
+Vamp HAProxy template can be updated for TLS on all ports.
 For instance assuming `/usr/local/vamp/vga.pem`, update:
 
 - virtual hosts: 

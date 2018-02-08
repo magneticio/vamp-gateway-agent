@@ -65,7 +65,6 @@ step "Building VGA Docker image"
 step "VGA base image   : " ${VGA_BASE_TAG}
 step "VGA new image tag: " ${VGA_TAG}
 sed -e "s/VGA_TAG/${VGA_BASE_TAG}/g" ${DIR}/Dockerfile > ${TEMP_DIR}/Dockerfile
-cp ${DIR}/haproxy.basic.cfg ${TEMP_DIR}/haproxy.basic.cfg
 docker build -t magneticio/vamp-gateway-agent:${VGA_TAG} -f ${TEMP_DIR}/Dockerfile ${TEMP_DIR}
 
 finish
