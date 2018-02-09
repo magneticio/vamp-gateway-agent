@@ -24,20 +24,41 @@ In order to avoid warnings add to global HAProxy configuration:
 tune.ssl.default-dh-param 2048
 ```
 
-Vamp HAProxy template can be updated for TLS on all ports.
-For instance assuming `/usr/local/vamp/vga.pem`, update:
-
-- virtual hosts: 
+Assuming `/usr/local/vamp/vga.pem` certificate path, update virtual hosts section: 
 ```
   bind 0.0.0.0:80
 ⇒ bind 0.0.0.0:80 ssl crt /usr/local/vamp/vga.pem
 ```
 
-- gateway front-ends: 
+Also TLS termination can be done differently. For instance just to terminate and proxy to a gateway port, replace virtual hosts part with:
 ```
-  bind {{ frontend.bindIp.get -}} : {{- frontend.bindPort.get }}
-⇒ bind {{ frontend.bindIp.get -}} : {{- frontend.bindPort.get }} ssl crt /usr/local/vamp/vga.pem
+### BEGIN - TLS TERMINATION
+
+frontend tls_termination
+
+  bind 0.0.0.0:443 ssl crt /usr/local/vamp/vga.pem
+  mode http
+
+  option httplog
+  log-format """{\"ci\":\"%ci\",\"cp\":%cp,\"t\":\"%t\",\"ft\":\"%ft\",\"b\":\"%b\",\"s\":\"%s\",\"Tq\":%Tq,\"Tw\":%Tw,\"Tc\":%Tc,\"Tr\":%Tr,\"Tt\":%Tt,\"ST\":%ST,\"B\":%B,\"CC\":\"%CC\",\"CS\":\"%CS\",\"tsc\":\"%tsc\",\"ac\":%ac,\"fc\":%fc,\"bc\":%bc,\"sc\":%sc,\"rc\":%rc,\"sq\":%sq,\"bq\":%bq,\"hr\":\"%hr\",\"hs\":\"%hs\",\"r\":%{+Q}r}"""
+  
+  use_backend tls_termination
+
+backend tls_termination
+
+  balance roundrobin
+  mode http
+
+  option forwardfor
+  http-request set-header X-Forwarded-Port %[dst_port]
+  
+  # server: sava/80
+  server tls_termination 127.0.0.1:80
+  
+### END - TLS TERMINATION
 ```
+
+Note `127.0.0.1:80` where `80` is a Vamp gateway port.
 
 ### Example
 
