@@ -23,12 +23,10 @@ fi
 : "${VAMP_KEY_VALUE_STORE_CONNECTION?not provided.}"
 : "${VAMP_ELASTICSEARCH_URL?not provided.}"
 
-
 for try in {1..9} ; do
   echo "vamp-gateway-agent/run: waiting for syslog to come online..."
   [[ -e /var/run/rsyslogd.pid ]] && break || sleep 1
 done
-
 
 printf "VAMP GATEWAY AGENT: " && cat /usr/local/vamp/version
 /usr/bin/confd -version
@@ -39,6 +37,14 @@ echo "VAMP_KEY_VALUE_STORE_PATH       : ${VAMP_KEY_VALUE_STORE_PATH}"
 echo "VAMP_ELASTICSEARCH_URL          : ${VAMP_ELASTICSEARCH_URL}"
 
 /usr/local/vamp/confd-generate-templates.sh
+
+if [[ "${VAMP_KEY_VALUE_STORE_TYPE}" == "vault" && -n ${VAMP_VAULT_CERTIFICATE_NAME} ]]; then
+  curl --cacert ${CONFD_CLIENT_CAKEYS} \
+       --cert ${CONFD_CLIENT_CERT} \
+       --key ${CONFD_CLIENT_KEY} \
+       --request POST --data "{\"name\": \"${VAMP_VAULT_CERTIFICATE_NAME}\"}" -s \
+       ${VAMP_KEY_VALUE_STORE_CONNECTION}/v1/auth/cert/login | jq -r .auth.client_token > /usr/local/vamp/token
+fi
 
 touch /usr/local/vamp/good2go
 
