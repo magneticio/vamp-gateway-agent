@@ -50,3 +50,7 @@ make
 Docker images after the build: `magneticio/vamp-gateway-agent:katana`
 
 For more details on available targets see the contents of the `Makefile`.
+
+## Additional documentation and examples
+
+- [TLS](https://github.com/magneticio/vamp-gateway-agent/tree/master/docs/tls)
