@@ -3,9 +3,9 @@ FROM alpine:3.6
 # https://github.com/peterbourgon/runsvinit
 ENV RUNSVINIT_URL=https://github.com/peterbourgon/runsvinit/releases/download/v2.0.0/runsvinit-linux-amd64.tgz
 
-ENV HAPROXY_VER=1.7.10
-ENV HAPROXY_MD5=a9b98a228660dee5ee65b62e3bd57822
-ENV HAPROXY_URL=http://www.haproxy.org/download/1.7/src/haproxy-${HAPROXY_VER}.tar.gz
+ENV HAPROXY_VER=1.8.4
+ENV HAPROXY_MD5=540cd21169e8828d5d11894b2fa74ab4
+ENV HAPROXY_URL=http://www.haproxy.org/download/1.8/src/haproxy-${HAPROXY_VER}.tar.gz
 
 ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v0.15.0/confd-0.15.0-linux-amd64
 
