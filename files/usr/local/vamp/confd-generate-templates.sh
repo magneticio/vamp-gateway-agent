@@ -43,7 +43,7 @@ filebeat.prospectors:
 
 output.elasticsearch:
   hosts: ["$VAMP_ELASTICSEARCH_URL"]
-  index: "vamp-vga-%{+yyyy-MM-dd}"
+  index: "vamp-vga-$VAMP_NAMESPACE-%{+yyyy-MM-dd}"
   template.path: \${path.config}/filebeat.template.json
 
 path.home: /usr/local/filebeat
