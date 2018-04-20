@@ -7,8 +7,8 @@
 [HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to:
 
 - read the HAProxy configuration using [confd](https://github.com/kelseyhightower/confd) and reload HAProxy on each configuration change with as little client traffic interruption as possible.
-- send HAProxy log to Logstash/Elasticsearch.
-- handle and recover from ZooKeeper, etcd, Consul and Logstash outages without interrupting the haproxy process and client requests.
+- send HAProxy log to Elasticsearch.
+- handle and recover from ZooKeeper, etcd, Consul and Vault outages without interrupting the haproxy process and client requests.
 
 Vamp generated HAProxy configuration will be appended to base configuration `haproxy.basic.cnf`.
 This allows using different base configuration if needed.
