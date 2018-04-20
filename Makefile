@@ -33,7 +33,7 @@ clean:
 	rm -Rf $(TARGET)
 
 .PHONY: purge
-purge:
+purge: clean
 	docker rmi -f magneticio/$(PROJECT):$(VERSION)
 
 .PHONY: build

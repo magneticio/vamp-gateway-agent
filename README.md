@@ -2,16 +2,18 @@
 
 [![Join the chat at https://gitter.im/magneticio/vamp](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/magneticio/vamp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Docker](https://img.shields.io/badge/docker-images-blue.svg)](https://hub.docker.com/r/magneticio/vamp-gateway-agent/tags/)
-[![Download](https://api.bintray.com/packages/magnetic-io/downloads/vamp-gateway-agent/images/download.svg) ](https://bintray.com/magnetic-io/downloads/vamp-gateway-agent/_latestVersion)
 
-[HAProxy](http://www.haproxy.org/) is a tcp/http load balancer, the purpose of this agent is to:
+Based on Vamp gateways, Vamp generates HAProxy configuration and stores it to KV store.
 
-- read the HAProxy configuration using [confd](https://github.com/kelseyhightower/confd) and reload HAProxy on each configuration change with as little client traffic interruption as possible.
-- send HAProxy log to Elasticsearch.
-- handle and recover from ZooKeeper, etcd, Consul and Vault outages without interrupting the haproxy process and client requests.
+Vamp Gateway Agent:
+- reads the [HAProxy](http://www.haproxy.org/) configuration using [confd](https://github.com/kelseyhightower/confd)
+- appends it to the base configuration `haproxy.basic.cnf`
+- if new configuration is valid, VGA reloads HAProxy with as little client traffic interruption as possible
 
-Vamp generated HAProxy configuration will be appended to base configuration `haproxy.basic.cnf`.
-This allows using different base configuration if needed.
+In addition to this VGA also:
+- send HAProxy log to Elasticsearch using [Filebeat](https://www.elastic.co/products/beats/filebeat)
+- handle and recover from ZooKeeper, etcd, Consul and Vault outages without interrupting the haproxy process and client requests
+- does Vault token renewal if needed
 
 ## Usage
 
@@ -41,15 +43,15 @@ To enable dnsmasq to resolve virtual hosts, pass the following environment varia
 - `VAMP_VGA_DNS_ENABLE` Set to non-empty value to enable
 - `VAMP_VGA_DNS_PORT` Listening port, default: 5353
 
-## Building Docker Images
+## Building Docker images
 
-```shell
-make
-```
+`make` targets:
+- `version` - displaying version (tag)
+- `clean` - removing temporal build directory `./target`
+- `purge` - running `clean` and removing image `magneticio/vamp-gateway-agent:${version}`
+- `build` - copying files to `./target` directory and building the image `magneticio/vamp-gateway-agent:${version}`
+- `default` - `clean build`
 
-Docker images after the build: `magneticio/vamp-gateway-agent:katana`
-
-For more details on available targets see the contents of the `Makefile`.
 
 ## Additional documentation and examples
 
