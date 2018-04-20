@@ -43,7 +43,7 @@ RUN set -xe && \
       pcre-dev \
       zlib-dev \
       openssl-dev && \
-    mkdir /usr/src \
+    mkdir /usr/src && \
     curl -fL $HAPROXY_URL > /usr/src/haproxy.tar.gz && \
     echo "$HAPROXY_MD5  /usr/src/haproxy.tar.gz" > /usr/src/haproxy.md5 && md5sum -c /usr/src/haproxy.md5 && \
     tar xzf /usr/src/haproxy.tar.gz -C /usr/src && \
@@ -95,4 +95,4 @@ ENV LANG=C.UTF-8
 
 EXPOSE 1988
 
-ENTRYPOINT ["/sbin/runsvinit"]
+CMD ["/sbin/runsvinit"]
