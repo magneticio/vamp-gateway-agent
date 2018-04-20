@@ -12,11 +12,7 @@ TARGET    := $(CURDIR)/target
 ifeq ($(shell git describe --tags),$(shell git describe --abbrev=0 --tags))
 	export VERSION := $(shell git describe --tags)
 else
-	ifeq ($(VAMP_GIT_BRANCH), $(filter $(VAMP_GIT_BRANCH), master ""))
-		export VERSION := katana-$$(git describe --tags)
-	else
-		export VERSION := $(subst /,_,$(VAMP_GIT_BRANCH))-$$(git describe --tags)
-	endif
+	export VERSION := $$(git rev-parse --abbrev-ref HEAD)-$$(git describe --tags)
 endif
 
 # if Makefile.local exists, include it.
