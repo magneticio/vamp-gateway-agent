@@ -17,17 +17,7 @@ ADD files/ /
 ADD version /usr/local/vamp/version
 
 RUN set -xe && \
-    apk add --no-cache \
-      bash \
-      curl \
-      iptables \
-      musl \
-      pcre \
-      rsyslog \
-      runit \
-      zlib \
-      openssl \
-      jq && \
+    apk add --no-cache bash curl musl pcre rsyslog runit zlib openssl jq && \
     curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin && \
     chown 0:0 /sbin/runsvinit && \
     chmod 0775 /sbin/runsvinit && \
@@ -35,14 +25,7 @@ RUN set -xe && \
     curl --location --silent --show-error --output /usr/bin/confd $CONFD_URL && \
     chmod 0755 /usr/bin/confd && \
     \
-    apk --no-cache --virtual=build-deps add \
-      gcc \
-      linux-headers \
-      make \
-      musl-dev \
-      pcre-dev \
-      zlib-dev \
-      openssl-dev && \
+    apk --no-cache --virtual=build-deps add gcc linux-headers make musl-dev pcre-dev zlib-dev openssl-dev && \
     mkdir /usr/src && \
     curl -fL $HAPROXY_URL > /usr/src/haproxy.tar.gz && \
     echo "$HAPROXY_MD5  /usr/src/haproxy.tar.gz" > /usr/src/haproxy.md5 && md5sum -c /usr/src/haproxy.md5 && \
