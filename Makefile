@@ -30,7 +30,7 @@ clean:
 
 .PHONY: purge
 purge: clean
-	docker rmi -f magneticio/$(PROJECT):$(VERSION)
+	docker rmi -f $$(docker images | grep $(PROJECT) | awk '{print $$3}') || true
 
 .PHONY: build
 build:

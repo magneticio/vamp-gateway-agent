@@ -48,7 +48,7 @@ To enable dnsmasq to resolve virtual hosts, pass the following environment varia
 `make` targets:
 - `version` - displaying version (tag)
 - `clean` - removing temporal build directory `./target`
-- `purge` - running `clean` and removing image `magneticio/vamp-gateway-agent:${version}`
+- `purge` - running `clean` and removing all images `magneticio/vamp-gateway-agent:*`
 - `build` - copying files to `./target` directory and building the image `magneticio/vamp-gateway-agent:${version}`
 - `default` - `clean build`
 
