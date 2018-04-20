@@ -50,4 +50,7 @@ path.home: /usr/local/filebeat
 path.config: \${path.home}
 path.data: \${path.home}/data
 path.logs: /var/log
+
+setup.template.name: "vamp-vga-$VAMP_NAMESPACE"
+setup.template.pattern: "vamp-vga-$VAMP_NAMESPACE-*"
 EOT
