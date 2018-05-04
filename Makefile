@@ -7,7 +7,11 @@ SHELL             := bash
 
 PROJECT   := vamp-gateway-agent
 TARGET    := $(CURDIR)/target
-VERSION   := $$(git rev-parse --abbrev-ref HEAD)
+VERSION   := ${BRANCH_NAME}
+
+ifeq ($(strip $(VERSION)),)
+VERSION := $$(git rev-parse --abbrev-ref HEAD)
+endif
 
 # if Makefile.local exists, include it.
 ifneq ("$(wildcard Makefile.local)", "")
