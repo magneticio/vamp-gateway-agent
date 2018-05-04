@@ -7,7 +7,7 @@ SHELL             := bash
 
 PROJECT   := vamp-gateway-agent
 TARGET    := $(CURDIR)/target
-IMAGE_TAG := ${BRANCH_NAME}
+IMAGE_TAG := $${BRANCH_NAME}
 VERSION   := $(shell git describe --tags)
 
 # if Makefile.local exists, include it.
