@@ -7,13 +7,7 @@ SHELL             := bash
 
 PROJECT   := vamp-gateway-agent
 TARGET    := $(CURDIR)/target
-
-# Determine which version we're building
-ifeq ($(shell git describe --tags),$(shell git describe --abbrev=0 --tags))
-	export VERSION := $(shell git describe --tags)
-else
-	export VERSION := $$(git rev-parse --abbrev-ref HEAD)-$$(git describe --tags)
-endif
+VERSION   := $$(git rev-parse --abbrev-ref HEAD)
 
 # if Makefile.local exists, include it.
 ifneq ("$(wildcard Makefile.local)", "")
