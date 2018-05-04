@@ -7,16 +7,21 @@ SHELL             := bash
 
 PROJECT   := vamp-gateway-agent
 TARGET    := $(CURDIR)/target
-VERSION   := ${BRANCH_NAME}
-
-ifeq ($(strip $(VERSION)),)
-VERSION := $$(git rev-parse --abbrev-ref HEAD)
-endif
+IMAGE_TAG := ${BRANCH_NAME}
+VERSION   := $(shell git describe --tags)
 
 # if Makefile.local exists, include it.
 ifneq ("$(wildcard Makefile.local)", "")
 	include Makefile.local
 endif
+
+ifeq ($(strip $(IMAGE_TAG)),)
+IMAGE_TAG := $(shell git rev-parse --abbrev-ref HEAD)
+endif
+
+.PHONY: tag
+tag:
+	@echo $(IMAGE_TAG)
 
 .PHONY: version
 version:
@@ -38,7 +43,7 @@ build:
 	cp -Rf $(CURDIR)/files $(TARGET)
 	echo $(VERSION) > $(TARGET)/version
 	cd $(TARGET) && \
-	docker build -t magneticio/$(PROJECT):$(VERSION) .
+	docker build -t magneticio/$(PROJECT):$(IMAGE_TAG) .
 
 .PHONY: default
 default: clean build
