@@ -15,9 +15,10 @@ ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-
 
 ADD files/ /
 ADD version /usr/local/vamp/version
+ADD logrotate.conf /etc/logrotate.conf
 
 RUN set -xe && \
-    apk add --no-cache bash curl musl pcre rsyslog runit zlib openssl jq && \
+    apk add --no-cache bash curl musl pcre rsyslog runit zlib openssl jq logrotate && \
     curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin && \
     chown 0:0 /sbin/runsvinit && \
     chmod 0775 /sbin/runsvinit && \
@@ -73,6 +74,7 @@ RUN set -xe && \
         "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
     \
     chmod +x /usr/local/vamp/tokenrenewer.sh
+RUN echo "0 * * * *	/usr/sbin/logrotate /etc/logrotate.conf" >> /etc/crontabs/root
 
 ENV LANG=C.UTF-8
 
