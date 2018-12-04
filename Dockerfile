@@ -14,7 +14,7 @@ ENV FILEBEAT_VER=5.1.2
 ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VER}-linux-x86_64.tar.gz
 
 ADD files/ /
-ADD version /usr/local/vamp/version
+# ADD version /usr/local/vamp/version
 ADD logrotate.conf /etc/logrotate.conf
 
 RUN set -xe && \
@@ -80,4 +80,4 @@ ENV LANG=C.UTF-8
 
 EXPOSE 1988
 
-CMD ["/sbin/runsvinit"]
+CMD service cron start && ["/sbin/runsvinit"]
