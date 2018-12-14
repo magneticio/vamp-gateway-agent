@@ -18,6 +18,7 @@ ADD version /usr/local/vamp/version
 ADD logrotate.conf /etc/logrotate.conf
 
 RUN set -xe && \
+    apk update && \
     apk add --no-cache bash curl musl pcre rsyslog runit zlib openssl jq logrotate && \
     curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin && \
     chown 0:0 /sbin/runsvinit && \
@@ -80,4 +81,4 @@ ENV LANG=C.UTF-8
 
 EXPOSE 1988
 
-CMD ["/sbin/runsvinit"]
+CMD service cron start && ["/sbin/runsvinit"]
