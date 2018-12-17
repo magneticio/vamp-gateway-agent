@@ -18,6 +18,7 @@ ADD files/ /
 ADD logrotate.conf /etc/logrotate.conf
 
 RUN set -xe && \
+    apk update && \
     apk add --no-cache bash curl musl pcre rsyslog runit zlib openssl jq logrotate && \
     curl --location --silent --show-error $RUNSVINIT_URL --output - | tar zxf - -C /sbin && \
     chown 0:0 /sbin/runsvinit && \
