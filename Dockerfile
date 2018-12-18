@@ -15,7 +15,6 @@ ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-
 
 ADD files/ /
 ADD version /usr/local/vamp/version
-ADD logrotate.conf /etc/logrotate.conf
 
 RUN set -xe && \
     apk update && \
