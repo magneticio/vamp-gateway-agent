@@ -80,4 +80,4 @@ ENV LANG=C.UTF-8
 
 EXPOSE 1988
 
-CMD crond && ["/sbin/runsvinit"]
+CMD crond && /sbin/runsvinit
