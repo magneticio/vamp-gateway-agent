@@ -28,6 +28,11 @@ for try in {1..9} ; do
   [[ -e /var/run/rsyslogd.pid ]] && break || sleep 1
 done
 
+if [ -f /usr/local/share/ca-certificates/vault-ca.crt ]; then
+   echo "Adding Vault custom CA certificate"
+   update-ca-certificates 2>/dev/null || true
+fi
+
 printf "VAMP GATEWAY AGENT: " && cat /usr/local/vamp/version
 /usr/bin/confd -version
 
