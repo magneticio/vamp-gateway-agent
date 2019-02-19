@@ -28,7 +28,7 @@ for try in {1..9} ; do
   [[ -e /var/run/rsyslogd.pid ]] && break || sleep 1
 done
 
-if [ ! z "$(ls -A /usr/local/share/ca-certificates)” ]; then
+if [ ! z "$(ls -A /usr/local/share/ca-certificates)" ]; then
    echo "Adding custom CA certificate"
    update-ca-certificates 2>/dev/null || true
 fi
