@@ -7,7 +7,7 @@ ENV HAPROXY_VER=1.8.8
 ENV HAPROXY_MD5=8633b6e661169d2fc6a44d82a3aceae5
 ENV HAPROXY_URL=http://www.haproxy.org/download/1.8/src/haproxy-${HAPROXY_VER}.tar.gz
 
-ENV CONFD_VER=0.16.0-vamp
+ENV CONFD_VER=0.16.1-vamp
 ENV CONFD_URL=https://github.com/magneticio/confd/releases/download/v${CONFD_VER}/confd-${CONFD_VER}-linux-amd64
 
 ENV FILEBEAT_VER=5.1.2
