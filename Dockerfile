@@ -7,8 +7,8 @@ ENV HAPROXY_VER=1.8.8
 ENV HAPROXY_MD5=8633b6e661169d2fc6a44d82a3aceae5
 ENV HAPROXY_URL=http://www.haproxy.org/download/1.8/src/haproxy-${HAPROXY_VER}.tar.gz
 
-ENV CONFD_VER=0.15.0
-ENV CONFD_URL=https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VER}/confd-${CONFD_VER}-linux-amd64
+ENV CONFD_VER=0.16.1-vamp
+ENV CONFD_URL=https://github.com/magneticio/confd/releases/download/v${CONFD_VER}/confd-${CONFD_VER}-linux-amd64
 
 ENV FILEBEAT_VER=5.1.2
 ENV FILEBEAT_URL=https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-${FILEBEAT_VER}-linux-x86_64.tar.gz
