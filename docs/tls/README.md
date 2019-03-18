@@ -1,19 +1,21 @@
 ## Vamp Gateway Agent & TLS Termination
 
-### Creating VGA with self-signed TLS certificate
+### Mutual TLS in VGA with self-signed certificates
 
 Run `build.sh`, possible parameters (environment variables):
 
 - VGA_TAG=${VGA_TAG:-tls}
 - VGA_BASE_TAG=${VGA_BASE_TAG:-katana}
 - VGA_DN=${VGA_DN:-localhost}
+- CLIENT_DN=${CLIENT_DN:-localhost}
 
 Script steps:
 
-- creating self-signed certificate
+- creating VGA certificates
+- creating client certificates
 - building the new VGA Docker image with the certificate
 
-Intermediate files including certificate are in `./.tmp` directory.
+Intermediate files including certificates are in `./.tmp` directory.
 
 Another approach is to use official VGA (without building the custom image) and mounting Docker volume with right certificate(s).
 
@@ -24,10 +26,10 @@ In order to avoid warnings add to global HAProxy configuration:
 tune.ssl.default-dh-param 2048
 ```
 
-Assuming `/usr/local/vamp/vga.pem` certificate path, update virtual hosts section: 
+Assuming `/usr/local/vamp/vgaCertAndKey.crt` VGA certificate path and `/usr/local/vamp/clientRootCA.crt` client CA certificate path, update virtual hosts section: 
 ```
   bind 0.0.0.0:80
-⇒ bind 0.0.0.0:80 ssl crt /usr/local/vamp/vga.pem
+⇒ bind 0.0.0.0:443 ssl crt /usr/local/vamp/vgaCertAndKey.crt ca-file /usr/local/vamp/clientRootCA.crt verify required
 ```
 
 Also TLS termination can be done differently. For instance just to terminate and proxy to a gateway port, replace virtual hosts part with:
@@ -36,7 +38,7 @@ Also TLS termination can be done differently. For instance just to terminate and
 
 frontend tls_termination
 
-  bind 0.0.0.0:443 ssl crt /usr/local/vamp/vga.pem
+  bind 0.0.0.0:443 ssl crt /usr/local/vamp/vgaCertAndKey.crt ca-file /usr/local/vamp/clientRootCA.crt verify required
   mode http
 
   option httplog
@@ -60,7 +62,7 @@ backend tls_termination
 
 Note `127.0.0.1:80` where `80` is a Vamp gateway port.
 
-### Example
+### Mutual TLS example
 
 Let's assume the following:
 
@@ -68,10 +70,10 @@ Let's assume the following:
 - we have `sava` deployed (port 9050) and virtual hosts enabled
 - it should work: `curl -H 'Host: 9050.sava.vamp' http://aaa-bbb-ccc.eu-west-1.elb.amazonaws.com`
 
-Now, setup the TLS using self-signed certificate:
+Now, setup the mutual TLS using self-signed certificates:
 
-- run: `export VGA_DN=*.elb.amazonaws.com && ./build.sh`
+- run: `export VGA_DN=*.eu-west-1.elb.amazonaws.com && export CLIENT_DN={YOUR_IP_ADDRESS} && ./build.sh`
 - we just created (by default): `magneticio/vamp-gateway-agent:tls`, redeploy VGA using that image
 - it should work as before: `curl -H 'Host: 9050.sava.vamp' http://aaa-bbb-ccc.eu-west-1.elb.amazonaws.com`
-- go to Vamp VGA template and update `bind 0.0.0.0:80` to `bind 0.0.0.0:443 ssl crt /usr/local/vamp/vga.pem`
-- check now (notice `https`): `curl --insecure -H 'Host: 9050.sava.vamp' https://aaa-bbb-ccc.eu-west-1.elb.amazonaws.com`
+- go to Vamp VGA template and update `bind 0.0.0.0:80` to `bind 0.0.0.0:443 ssl crt /usr/local/vamp/vgaCertAndKey.crt ca-file /usr/local/vamp/clientRootCA.crt verify required`
+- check now (notice `https`): `curl --cacert .tmp/vga/vgaRootCA.crt --cert .tmp/client/client.crt --key .tmp/client/client.key -H 'Host: 9050.sava.vamp' https://aaa-bbb-ccc.eu-west-1.elb.amazonaws.com`

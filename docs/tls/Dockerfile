@@ -1,3 +1,4 @@
 FROM magneticio/vamp-gateway-agent:VGA_TAG
 
-ADD vga.pem /usr/local/vamp/
+ADD vga/vgaCertAndKey.crt /usr/local/vamp/
+ADD client/clientRootCA.crt /usr/local/vamp/
